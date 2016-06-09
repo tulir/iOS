@@ -32,9 +32,10 @@ else _G["sys"].DeviceName = "iMac" end
 
 -- Check if the device is being reloaded (rather than rebooted)
 _G["isReload"] = fs.exists("/.ios/reload")
+_G["noArtificialLag"] = fs.exists("/.ios/nolag")
 
 local function fakeSleep(time)
-    if not isReload then os.sleep(time) end
+    if not isReload and not noArtificialLag then os.sleep(time) end
 end
 
 -- Define the loadFile function that allows lua source files to be loaded

@@ -23,7 +23,7 @@ function Init()
 		io.Cprintln(colors.lime, "What should I call you?")
 		_G["sys"].Owner = io.ReadInputString(">", false)
 		io.Cprintfln(colors.lime, "Hello, %s.", sys.Owner)
-        os.sleep(0.5)
+        if not noArtificialLag then os.sleep(0.5) end
         io.Cprintln(colors.lime, "What's the name of this computer?")
         _G["sys"].Name = io.ReadInputString(">", false)
 		SetNewPin()
