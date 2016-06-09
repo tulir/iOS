@@ -41,51 +41,65 @@ end
 function runString(code, tEnv)
     if not tEnv then tEnv = {} end
 
-    output = {}
+    local out = {}
     if not tEnv.term then tEnv.term = {} end
     tEnv.term.write = function(text)
-        if not text then text = "" end
-        if #output == 0 or not output[#output] or string.sub(output[#output], -1) == "\n" then
-            output[#output + 1] = text
+        text = turnToString(text, true)
+        if #out == 0 or not out[#out] or string.sub(out[#out], -1) == "\n" then
+            out[#out + 1] = text
         else
-            output[#output] = output[#output] .. text
+            out[#out] = out[#out] .. text
         end
     end
     tEnv.write = tEnv.term.write
     tEnv.print = function(text)
-        if not text then text = "" end
-        tEnv.term.write(text .. "\n")
+        tEnv.term.write(text)
+        tEnv.term.write("\n")
     end
 
     setmetatable(tEnv, {__index = _G})
 
-    local returnVal
+    local func
     if setfenv and loadstring then
-        local f = loadstring(code)
-        setfenv(f, tEnv)
-        returnVal = { f() }
+        func = loadstring(code)
+        setfenv(func, tEnv)
     else
-        returnVal = { load(code, nil, "t", tEnv)() }
+        func = load(code, nil, "t", tEnv)
     end
-    if returnVal ~= nil then
-        if type(returnVal) == "string" then
-            output[#output + 1] = returnVal
-        elseif type(returnVal) == "number" then
-            output[#output + 1] = tostring(returnVal)
-        elseif type(returnVal) == "table" then
-            output[#output + 1] = table.concat(returnVal, ", ")
-        elseif type(returnVal) == "function" then
-            output[#output + 1] = string.dump(returnVal)
-        elseif type(returnVal) == "boolean" then
-            if returnVal then output[#output + 1] = "true"
-            else output[#output + 1] = "false" end
-        else
-            output[#output + 1] = "OK"
-        end
+    local ok, returnVal = pcall(func)
+
+    if not ok then
+        out[#out + 1] = string.sub(tostring(returnVal), 14)
+    elseif returnVal ~= nil then
+        ok, out[#out + 1] = pcall(turnToString, returnVal, false)
     end
 
-    output = table.concat(output)
-    return output
+    return table.concat(out)
+end
+
+function turnToString(t, emptyNil)
+    if t == nil or type(t) == "nil" then
+        if emptyNil then return ""
+        else return "OK" end
+    elseif type(t) == "string" then
+        return t
+    elseif type(t) == "number" then
+        return tostring(t)
+    elseif type(t) == "boolean" then
+        if t then return "true"
+        else return "false" end
+    elseif type(t) == "table" then
+        t2 = {}
+        for i, v in ipairs(t) do
+            t2[#t2 + 1] = turnToString(v)
+        end
+        return "{" .. table.concat(t2, ", ") .. "}"
+    elseif type(t) == "function" then
+        return string.dump(t)
+    else
+        if emptyNil then return ""
+        else return "OK" end
+    end
 end
 
 function sshdListener(port)
