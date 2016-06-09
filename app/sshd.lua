@@ -38,6 +38,44 @@ function Run(args)
     io.Cprintln(colors.orange, VERSION .. " closed!")
 end
 
+function runString(code, tEnv)
+    if not tEnv then tEnv = {} end
+
+    output = {}
+    if not tEnv.term then tEnv.term = {} end
+    tEnv.term.write = function(text)
+        if not text then text = "" end
+        if #output == 0 or not output[#output] or string.sub(output[#output], -1) == "\n" then
+            output[#output + 1] = text
+        else
+            output[#output] = output[#output] .. text
+        end
+    end
+    tEnv.write = tEnv.term.write
+    tEnv.print = function(text)
+        if not text then text = "" end
+        tEnv.term.write(text .. "\n")
+    end
+
+    setmetatable(tEnv, {__index = _G})
+
+    local returnVal
+    if setfenv and loadstring then
+        local f = loadstring(code)
+        setfenv(f, tEnv)
+        returnVal = f()
+    else
+        returnVal = load(code, nil, "t", tEnv)()
+    end
+    if returnVal then
+        table.insert(output, returnVal)
+    end
+
+    output = table.concat(output)
+    if not output then output = "OK" end
+    return output
+end
+
 function sshdListener(port)
     local from, to, message, distance = net.Receive()
     distance = tostring(distance)
@@ -82,9 +120,7 @@ function sshdListener(port)
                 return true
             end
             io.Cprintfln(colors.cyan, "Executing data from %d:\n%s", from, msg)
-            local output = loadstring("return " + msg)()
-            if not output then output = "OK" end
-            net.Transmit(port, from, "data" .. msgSeparator .. c.Flip("output" .. msgSeparator .. distance .. msgSeparator .. output))
+            net.Transmit(port, from, "data" .. msgSeparator .. c.Flip("output" .. msgSeparator .. distance .. msgSeparator .. runString(msg)))
         else
             net.Transmit(port, from, "Invalid PIN" .. msgSeparator .. distance)
         end

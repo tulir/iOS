@@ -60,33 +60,45 @@ function Run(args)
     local prefix = tostring(serverPort) .. "$"
     while true do
         local line = io.ReadInputString(prefix, false)
-        local message = "msg" .. msgSeparator .. c.Flip(pin .. msgSeparator .. line)
-        c.Flip("SecurityViaObscurity>>MessageFlip")
-        net.Transmit(localPort, serverPort, message)
-        local from, to, message, distance = net.Receive(3)
-        if not from then
-            io.Cprintfln(colors.red, "Connection to %d timed out.", serverPort)
-            return
+        if line then
+            local message = "msg" .. msgSeparator .. c.Flip(pin .. msgSeparator .. line)
+            c.Flip("SecurityViaObscurity>>MessageFlip")
+            net.Transmit(localPort, serverPort, message)
+
+            sshReceive(c)
         end
-        local parts = string.split(message, msgSeparator)
-        if parts[1] == "data" then
-            local msg = c.Flip(parts[2])
-            parts = string.split(msg, msgSeparator)
-            if parts[1] == "stop" then
-                io.Cprintln(colors.cyan, "Connection closed: SSHd stop")
-                return
-            elseif parts[1] == "logout" then
-                io.Cprintln(colors.cyan, "Connection closed: Logout")
-                return
-            elseif parts[1] == "output" then
-                table.remove(parts, 1)
-                table.remove(parts, 1)
-                io.Println(table.concat(parts, msgSeparator))
+    end
+end
+
+function sshReceive(c)
+    local from, to, message, distance = net.Receive(3)
+    if not from then
+        io.Cprintfln(colors.red, "Connection to %d timed out.", serverPort)
+        return
+    end
+
+    local parts = string.split(message, msgSeparator)
+    if parts[1] == "data" then
+        local msg = c.Flip(parts[2])
+        parts = string.split(msg, msgSeparator)
+        if parts[1] == "stop" then
+            io.Cprintln(colors.cyan, "Connection closed: SSHd stop")
+            return
+        elseif parts[1] == "logout" then
+            io.Cprintln(colors.cyan, "Connection closed: Logout")
+            return
+        elseif parts[1] == "output" then
+            table.remove(parts, 1)
+            table.remove(parts, 1)
+            msg = table.concat(parts, msgSeparator)
+            io.Print(msg)
+            if string.sub(msg, -1) ~= "\n" then
+                io.Newline()
             end
-        else
-            io.Cprintfln(colors.red, "Failed to send command to %d: %s", from, parts[1])
-            io.Cprintln(colors.red, "Disconnected: Invalid session")
-            return
         end
+    else
+        io.Cprintfln(colors.red, "Failed to send command to %d: %s", from, parts[1])
+        io.Cprintln(colors.red, "Disconnected: Invalid session")
+        return
     end
 end
