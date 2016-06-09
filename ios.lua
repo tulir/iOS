@@ -34,10 +34,6 @@ else _G["sys"].DeviceName = "iMac" end
 _G["isReload"] = fs.exists("/.ios/reload")
 _G["noArtificialLag"] = fs.exists("/.ios/nolag")
 
-local function fakeSleep(time)
-    if not isReload and not noArtificialLag then os.sleep(time) end
-end
-
 -- Define the loadFile function that allows lua source files to be loaded
 local filesLoading = {}
 _G["loadFile"] = function(path, required, printInfo)
@@ -61,7 +57,7 @@ _G["loadFile"] = function(path, required, printInfo)
         return false
     end
     filesLoading[path] = true
-    fakeSleep(math.random() / 10)
+    io.Lag(math.random() / 10, true)
     if printInfo then write(".") end
     local tEnv = {}
     setmetatable(tEnv, {__index = _G})
@@ -75,7 +71,7 @@ _G["loadFile"] = function(path, required, printInfo)
             loadFail()
             return false
         end
-        fakeSleep(math.random() / 10)
+        io.Lag(math.random() / 10, true)
         if printInfo then write(".") end
     else
         if printInfo then write("\n") end
@@ -91,7 +87,7 @@ _G["loadFile"] = function(path, required, printInfo)
             tAPI[k] =  v
         end
     end
-    fakeSleep(math.random() / 10)
+    io.Lag(math.random() / 10, true)
     if printInfo then print(".") end
 
     filesLoading[path] = nil

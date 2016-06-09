@@ -23,6 +23,13 @@ function GetPrevIO()
 	return prevIO
 end
 
+-- Create artificial lag (if enabled)
+function Lag(time, notIfReload)
+    if noArtificialLag then return
+    elseif notIfReload and isReload then return
+    else os.sleep(time) end
+end
+
 -- Move the cursor to the next line.
 function Newline()
 	local x, y = term.getCursorPos()

@@ -21,7 +21,7 @@ function Dots(n, intv, color, newline)
 
     for i=1,n do
         io.Cprint(color, ".")
-        if not noArtificialLag then os.sleep(intv) end
+        io.Lag(intv)
     end
     if newline then
         io.Newline()
@@ -35,7 +35,7 @@ function DotsCustom(n, intvs, color, newline)
 
     for i=1,n do
         io.Cprint(color, ".")
-        if not noArtificialLag then os.sleep(intvs[i]) end
+        io.Lag(intvs[i])
     end
     if newline then
         io.Newline()
@@ -49,7 +49,7 @@ function DotsRandom(n, randDiv, color, newline)
 
     for i=1,n do
         io.Cprint(color, ".")
-        if not noArtificialLag then os.sleep(math.random() / randDiv) end
+        io.Lag(math.random() / randDiv)
     end
     if newline then
         io.Newline()
