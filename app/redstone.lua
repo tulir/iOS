@@ -27,7 +27,7 @@ function Run(args)
 			else
 				local bool = toBool(args[2])
 				redstone.setOutput(args[1], bool)
-				io.Cprintfln(colors.blue, "Output %s set to %b.", args[1], bool)
+				io.Cprintfln(colors.blue, "Output %s set to %s.", args[1], tostring(bool))
 			end
 		else
 			io.Cprintln(colors.red, "Usage: redstone <side> <value>")
