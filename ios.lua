@@ -109,13 +109,13 @@ if not fs.isDir("/.ios") then
 end
 
 -- Load the user startup script
-_G["startup"] = loadFile("/.ios/startup", false, true)
+_G["startup"] = loadFile("/.ios/startup", false, isReload)
 if not startup then startup = {} end
 
 -- Load system scripts
-_G["main"] = loadFile("/sys/main", true, true)
-_G["lock"] = loadFile("/sys/lock", true, true)
-_G["commands"] = loadFile("/sys/commands", true, true)
+_G["main"] = loadFile("/sys/main", true, isReload)
+_G["lock"] = loadFile("/sys/lock", true, isReload)
+_G["commands"] = loadFile("/sys/commands", true, isReload)
 
 if startup.PreLibs then startup.PreLibs() end
 main.LoadLibs() -- Load libraries
