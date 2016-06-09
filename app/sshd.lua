@@ -63,16 +63,28 @@ function runString(code, tEnv)
     if setfenv and loadstring then
         local f = loadstring(code)
         setfenv(f, tEnv)
-        returnVal = f()
+        returnVal = { f() }
     else
-        returnVal = load(code, nil, "t", tEnv)()
+        returnVal = { load(code, nil, "t", tEnv)() }
     end
-    if returnVal then
-        table.insert(output, returnVal)
+    if returnVal ~= nil then
+        if type(returnVal) == "string" then
+            output[#output + 1] = returnVal
+        elseif type(returnVal) == "number" then
+            output[#output + 1] = tostring(returnVal)
+        elseif type(returnVal) == "table" then
+            output[#output + 1] = table.concat(returnVal, ", ")
+        elseif type(returnVal) == "function" then
+            output[#output + 1] = string.dump(returnVal)
+        elseif type(returnVal) == "boolean" then
+            if returnVal then output[#output + 1] = "true"
+            else output[#output + 1] = "false" end
+        else
+            output[#output + 1] = "OK"
+        end
     end
 
     output = table.concat(output)
-    if not output then output = "OK" end
     return output
 end
 
