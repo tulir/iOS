@@ -132,6 +132,7 @@ function sshdListener(port)
         parts = string.split(msg, msgSeparator)
         if #parts < 2 then
             io.Cprintfln(colors.orange, "Invalid message from %d (E002)", from)
+            net.Transmit(port, from, "data" .. msgSeparator .. c.Flip("invalidmsg" .. msgSeparator .. distance))
             return true
         end
 
