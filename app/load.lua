@@ -22,9 +22,9 @@ function Run(args)
 
 	local loaded = false
 	if args[1] == "g" or args[1] == "global" then
-		loaded = loadApp("/app/", args[2], false)
+		loaded = main.LoadApp("/app/", args[2], false)
 	elseif args[1] == "l" or args[1] == "local" then
-		loaded = loadApp("/.ios/localapps/", args[2], false)
+		loaded = main.LoadApp("/.ios/localapps/", args[2], false)
 	else
 		io.Cprintln(colors.red, "Usage: load <g/l> <app>")
 		return

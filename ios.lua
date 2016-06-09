@@ -13,27 +13,33 @@
 
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+-- Set default color
 term.setTextColor(colors.lightGray)
+
+-- Don't allow termination and other nasty things -> replace pullEvent with pullEventRaw
 os.pullEvent = os.pullEventRaw
-
+-- Allow the Shell API to be accessed in apps and libs
 _G["shell"] = shell
+
+-- Set system information
 _G["sys"] = {}
-
 _G["sys"].OSName = "iOS"
-_G["sys"].OSVersion = "0.3.0"
+_G["sys"].OSVersion = "0.4.0"
 _G["sys"].NameVersion = sys.OSName .. " " .. sys.OSVersion
-
 if pocket then _G["sys"].DeviceName = "iPhone"
 else _G["sys"].DeviceName = "iMac" end
 
-local isReload = fs.exists("/.ios/reload")
+-- Check if the device is being reloaded (rather than rebooted)
+_G["isReload"] = fs.exists("/.ios/reload")
 
 local function fakeSleep(time)
     if not isReload then os.sleep(time) end
 end
 
+-- Define the loadFile function that allows lua source files to be loaded
 local filesLoading = {}
-function loadFile(path, required, printInfo)
+_G["loadFile"] = function(path, required, printInfo)
     local function loadFail()
         term.setTextColor(colors.red)
         term.setTextColor(colors.lightGray)
@@ -94,6 +100,7 @@ end
 term.clear()
 term.setCursorPos(1, 1)
 
+-- Create the user data directory if it doesn't exist
 if not fs.isDir("/.ios") then
 	fs.makeDir("/.ios")
 	fs.makeDir("/.ios/localapps")
@@ -101,143 +108,30 @@ if not fs.isDir("/.ios") then
 	fs.open("/.ios/startup.lua", "w").close()
 end
 
+-- Load the user startup script
 _G["startup"] = loadFile("/.ios/startup", false, true)
 if not startup then startup = {} end
 
+-- Load system scripts
+_G["main"] = loadFile("/sys/main", true, true)
 _G["lock"] = loadFile("/sys/lock", true, true)
 _G["commands"] = loadFile("/sys/commands", true, true)
 
 if startup.PreLibs then startup.PreLibs() end
-
--- Load everything in the library directory into the global namespace.
-for _, file in ipairs(fs.list("/lib")) do
-    file = string.sub(file, 1, string.len(file) - 4)
-    _G[file] = loadFile("/lib/" .. file, true, true)
-end
-
+main.LoadLibs() -- Load libraries
 if startup.PreApps then startup.PreApps() end
-
-_G["apps"] = {}
-_G["aliases"] = {}
-_G["loadApp"] = function(dir, file, printInfo)
-    file = string.sub(file, 1, string.len(file) - 4)
-    local app = loadFile(dir .. file, false, printInfo)
-    if app and type(app) == "table" and type(app.Run) == "function" then
-        _G["apps"][file] = app
-        if app.Aliases then
-            for i, alias in ipairs(app.Aliases) do
-                _G["aliases"][alias] = file
-            end
-        end
-        return true
-    else
-        _G["apps"][file] = file
-        return false
-    end
-end
-
--- Load everything in the apps directory into the apps table.
-for _, file in ipairs(fs.list("/app")) do
-    loadApp("/app/", file, true)
-end
-
--- Load the users own apps into the apps table.
-for _, file in ipairs(fs.list("/.ios/localapps")) do
-    loadApp("/.ios/localapps/", file, true)
-end
-
+main.LoadApps() -- Load system and user apps
 if startup.PreLogin then startup.PreLogin() end
+main.StartupLock() -- Activate the startup lock
 
-if not isReload then
-    io.Print("Loading security info")
-    animate.Dots(3, 0.1, io.DEFAULT_COLOR, true)
-end
-io.Clear()
-if not lock.Init() then
-    if isReload then
-    	fs.delete("/.ios/reload")
-        -- Reload bar
-        w, h = term.getSize()
-        term.setCursorPos(w / 2 - 8, h / 2 - 1)
-        io.Cprint(colors.cyan, "|----------------|")
-        term.setCursorPos(w / 2 - 8, h / 2 + 1)
-        io.Cprint(colors.cyan, "|----------------|")
-        term.setCursorPos(w / 2 - 8, h / 2)
-        io.Cprint(colors.cyan, "|")
-        io.Cprint(colors.blue, "Reloading")
-        term.setCursorPos(w / 2 + 9, h / 2)
-        io.Cprint(colors.cyan, "|")
-        term.setCursorPos(w / 2 + 2, h / 2)
-        animate.DotsRandom(7, 3, colors.blue, true)
-        -- End reload bar
-    elseif not fs.exists("/.ios/nolock") then
-    	lock.PINPrompt()
-    end
-end
-
-local function commandRun(func, args)
-    local success, msg = pcall(func, args)
-    if not success then io.Cprintln(colors.red, msg) end
-end
-
-local function commandLoop(cmd, args)
-    app = apps[cmd]
-    if app then
-        if type(app) ~= "table" or type(app.Run) ~= "function" then
-            io.Cprintfln(colors.red, "App %s wasn't loaded properly. Try load <app>", app)
-        else
-            _G["runningApp"] = app
-            commandRun(app.Run, args)
-            _G["runningApp"] = nil
-        end
-        return
-    end
-
-    alias = aliases[cmd]
-    if alias then
-        app = apps[alias]
-        if app then
-            if type(app) ~= "table" or type(app.Run) ~= "function" then
-                io.Cprintfln(colors.red, "App %s (alias %s) wasn't loaded properly. Try load <app>", app, alias)
-            else
-                _G["runningApp"] = app
-                commandRun(app.Run, args)
-                _G["runningApp"] = nil
-            end
-            return
-        end
-    end
-
-	func = commands[cmd]
-	if func then
-        commandRun(func, args)
-        return
-    end
-
-	io.Cprintln(colors.red, "Unknown command. Try help for a list of commands")
-end
-
-isReload = false
-_G["runningApp"] = nil
-
-function timeUpdater()
-    while true do
-        if not runningApp or not runningApp.FillScreen then io.FooterTime() end
-        os.sleep(0.5)
-    end
-end
+-- Unset isReload so it wouldn't affect anything
+_G["isReload"] = false
 
 if startup.PostLogin then startup.PostLogin() end
+
+-- Clear terminal and welcome user
 io.Clear()
 io.Cprintfln(colors.blue, "Welcome, %s", sys.Owner)
-function mainLoop()
-    if startup.PreLoop then startup.PreLoop() end
-    while true do
-    	cmd, args = io.ReadInput("$", true)
-        if cmd == "exit" then break
-        elseif cmd then commandLoop(cmd, args) end
-    end
-    if startup.PostLoop then startup.PostLoop() end
-end
 
-parallel.waitForAny(mainLoop, timeUpdater)
+-- Run the main loop and the time updater in parallel
+parallel.waitForAny(main.Loop, main.TimeUpdater)
