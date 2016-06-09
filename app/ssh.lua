@@ -81,6 +81,8 @@ function Run(args)
                 elseif parts[1] == "logout" then
                     io.Cprintln(colors.cyan, "Connection closed: Logout")
                     return
+                elseif parts[1] == "invalidmsg" then
+                    io.Cprintln(colors.yellow, "Failed to send message")
                 elseif parts[1] == "output" then
                     table.remove(parts, 1)
                     table.remove(parts, 1)
@@ -89,6 +91,9 @@ function Run(args)
                     if string.sub(msg, -1) ~= "\n" then
                         io.Newline()
                     end
+                else
+                    return
+--                    io.Cprintfln(colors.yellow, "Unknown message type: %s", parts[1])
                 end
             else
                 io.Cprintfln(colors.red, "Failed to send command to %d: %s", from, parts[1])
