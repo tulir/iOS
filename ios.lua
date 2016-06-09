@@ -37,6 +37,11 @@ _G["noArtificialLag"] = fs.exists("/.ios/nolag")
 -- Define the loadFile function that allows lua source files to be loaded
 local filesLoading = {}
 _G["loadFile"] = function(path, required, printInfo)
+    local function lag(time)
+        if noArtificialLag or isReload then return
+        else os.sleep(time) end
+    end
+
     local function loadFail()
         term.setTextColor(colors.red)
         term.setTextColor(colors.lightGray)
@@ -57,7 +62,7 @@ _G["loadFile"] = function(path, required, printInfo)
         return false
     end
     filesLoading[path] = true
-    io.Lag(math.random() / 10, true)
+    lag(math.random() / 10)
     if printInfo then write(".") end
     local tEnv = {}
     setmetatable(tEnv, {__index = _G})
@@ -71,7 +76,7 @@ _G["loadFile"] = function(path, required, printInfo)
             loadFail()
             return false
         end
-        io.Lag(math.random() / 10, true)
+        lag(math.random() / 10)
         if printInfo then write(".") end
     else
         if printInfo then write("\n") end
@@ -87,7 +92,7 @@ _G["loadFile"] = function(path, required, printInfo)
             tAPI[k] =  v
         end
     end
-    io.Lag(math.random() / 10, true)
+    lag(math.random() / 10)
     if printInfo then print(".") end
 
     filesLoading[path] = nil
