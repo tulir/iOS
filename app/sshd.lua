@@ -106,7 +106,8 @@ function sshdListener(port)
     local from, to, message, distance = net.Receive()
     distance = tostring(distance)
     local parts = string.split(message, msgSeparator)
-    if #parts ~= 2 then
+    if #parts < 2 then
+        io.Cprintfln(colors.orange, "Invalid message from %d (E001)", from)
         return true
     end
     if parts[1] == "login" then
@@ -130,6 +131,7 @@ function sshdListener(port)
         c.Flip("SecurityViaObscurity>>MessageFlip")
         parts = string.split(msg, msgSeparator)
         if #parts < 2 then
+            io.Cprintfln(colors.orange, "Invalid message from %d (E002)", from)
             return true
         end
 
@@ -151,5 +153,7 @@ function sshdListener(port)
             net.Transmit(port, from, "Invalid PIN" .. msgSeparator .. distance)
         end
         return true
+    else
+        io.Cprintfln(colors.orange, "Invalid message from %d (E003)", from)
     end
 end
