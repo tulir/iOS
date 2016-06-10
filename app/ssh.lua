@@ -60,7 +60,9 @@ function Run(args)
     local prefix = tostring(serverPort) .. "$"
     while true do
         local line = io.ReadInputString(prefix, false)
-        if line and line:len() > 0 then
+        if line == "term" then
+            return
+        elseif line and line:len() > 0 then
             local message = "msg" .. msgSeparator .. c.Flip(pin .. msgSeparator .. line)
             c.Flip("SecurityViaObscurity>>MessageFlip")
             net.Transmit(localPort, serverPort, message)
