@@ -95,7 +95,7 @@ function turnToString(t, emptyNil)
         end
         return "{" .. table.concat(t2, ", ") .. "}"
     elseif type(t) == "function" then
-        return t .. "|" .. string.dump(t)
+        return "func>" .. string.dump(t)
     else
         if emptyNil then return ""
         else return "OK" end
