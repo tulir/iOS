@@ -57,12 +57,15 @@ function Run(args)
         return
     end
 
-    local prefix = tostring(serverPort) .. "$"
+    local prefix = tostring(serverPort) .. "$ "
+    local cmdHistory = {}
     while true do
-        local line = io.ReadInputString(prefix, false)
+    	io.Cprint(colors.lime, prefix)
+        local line = io.ReadLine(nil, cmdHistory)
         if line == "term" then
             return
         elseif line and line:len() > 0 then
+            cmdHistory[#cmdHistory + 1] = line
             local message = "msg" .. msgSeparator .. c.Flip(pin .. msgSeparator .. line)
             c.Flip("SecurityViaObscurity>>MessageFlip")
             net.Transmit(localPort, serverPort, message)
