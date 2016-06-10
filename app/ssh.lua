@@ -17,6 +17,21 @@
 VERSION = "SSH 0.1.0"
 msgSeparator = string.char(9)
 
+function runString(code)
+    local func
+    if loadstring then
+        func = loadstring(code)
+    else
+        func = load(code)
+    end
+    local ok, returnVal = pcall(func)
+    if not ok then
+        io.Println(string.sub(returnVal, 13))
+    elseif returnVal then
+        io.Println(returnVal)
+    end
+end
+
 function Run(args)
     if not net.enabled then
         io.Cprintln(colors.red, "No network adapters found!")
@@ -92,9 +107,17 @@ function Run(args)
                     table.remove(parts, 1)
                     table.remove(parts, 1)
                     msg = table.concat(parts, msgSeparator)
-                    io.Print(msg)
-                    if string.sub(msg, -1) ~= "\n" then
-                        io.Newline()
+                    if string.sub(msg, 1, 5) == "func>" then
+                        io.Cprint(colors.blue, "Run received function? [y/N] ")
+                        local yn = io.ReadLine()
+                        if yn == "y" or yn == "Y" then
+                            runString(string.sub(msg, 6))
+                        end
+                    else
+                        io.Print(msg)
+                        if string.sub(msg, -1) ~= "\n" then
+                            io.Newline()
+                        end
                     end
                 else
                     return
