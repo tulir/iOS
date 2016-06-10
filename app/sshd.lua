@@ -91,11 +91,11 @@ function turnToString(t, emptyNil)
     elseif type(t) == "table" then
         t2 = {}
         for i, v in ipairs(t) do
-            t2[#t2 + 1] = turnToString(v)
+            t2[#t2 + 1] = turnToString(v, false)
         end
         return "{" .. table.concat(t2, ", ") .. "}"
     elseif type(t) == "function" then
-        return string.dump(t)
+        return t .. "|" .. string.dump(t)
     else
         if emptyNil then return ""
         else return "OK" end
