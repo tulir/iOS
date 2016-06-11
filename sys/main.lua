@@ -90,9 +90,9 @@ end
 function Loop()
 	if startup.PreLoop then startup.PreLoop() end
 	while true do
-		cmd, args = io.ReadInput("$", true)
+		cmd, args, termd = io.ReadInput("$", true)
 		if cmd == "exit" then break
-		elseif cmd then HandleCommand(cmd, args) end
+		elseif not termd and cmd then HandleCommand(cmd, args) end
 	end
 	if startup.PostLoop then startup.PostLoop() end
 end

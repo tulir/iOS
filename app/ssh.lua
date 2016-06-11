@@ -50,15 +50,19 @@ function Run(alias, args)
 	end
 
 	io.Cprintln(colors.cyan, "Server PIN")
-	local pin = io.ReadInputString(">", false, "*")
+	local pin, term = io.ReadInputString(">", false, "*")
+	if term then
+		io.Cprintln(colors.red, "Connection cancelled.")
+		return
+	end
 
 	local c = crypt.New(pin)
 	local localPort = net.OpenRandom()
 
 	net.Transmit(localPort, serverPort, "login" .. msgSeparator .. c.Flip(pin))
 	c.Flip("SecurityViaObscurity>>LoginFlip")
-	local from, to, message, distance, term = net.Receive(3)
-	if term then
+	local from, to, message, distance, termd = net.Receive(3)
+	if termd then
 		io.Cprintln(colors.red, "Connection terminated.")
 		return
 	elseif not from then
@@ -79,8 +83,9 @@ function Run(alias, args)
 	local cmdHistory = {}
 	while true do
 		io.Cprint(colors.lime, prefix)
-		local line = io.ReadLine(nil, cmdHistory)
-		if line == "term" then
+		local line, termd = io.ReadLine(nil, cmdHistory)
+		if termd then
+			io.Cprintln(colors.red, "Connection terminated.")
 			return
 		elseif line and line:len() > 0 then
 			cmdHistory[#cmdHistory + 1] = line
@@ -88,8 +93,8 @@ function Run(alias, args)
 			c.Flip("SecurityViaObscurity>>MessageFlip")
 			net.Transmit(localPort, serverPort, message)
 
-			local from, to, message, distance = net.Receive(3)
-			if term then
+			local from, to, message, distance, termd = net.Receive(3)
+			if termd then
 				io.Cprintln(colors.red, "Connection terminated.")
 				return
 			elseif not from then

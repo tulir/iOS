@@ -186,6 +186,7 @@ function ReadLine(replChar, history)
 	term.setCursorBlink(true)
 
 	local sLine = ""
+	local termd = false
 	local nHistoryPos
 	local nPos = 0
 	if replChar then
@@ -221,7 +222,10 @@ function ReadLine(replChar, history)
 
 	while true do
 		local sEvent, param = os.pullEvent()
-		if sEvent == "char" then
+		if sEvent == "terminate" then
+			termd = true
+			break
+		elseif sEvent == "char" then
 			clear()
 			sLine = string.sub(sLine, 1, nPos) .. param .. string.sub(sLine, nPos + 1)
 			nPos = nPos + 1
@@ -307,15 +311,17 @@ function ReadLine(replChar, history)
 	term.setCursorPos(w + 1, cy)
 	Newline()
 
-	return sLine
+	return sLine, termd
 end
 
 function ReadInputString(char, history, replChar)
 	Cprintf(colors.lime, "%s ", char)
 	if history then
-		local input = ReadLine(replChar, cmdHistory)
-		table.insert(cmdHistory, input)
-		return input
+		local input, term = ReadLine(replChar, cmdHistory)
+		if not term then
+			table.insert(cmdHistory, input)
+		end
+		return input, term
 	else
 		return ReadLine(replChar)
 	end
@@ -324,14 +330,17 @@ end
 function ReadInput(char, history, replChar)
 	Cprintf(colors.lime, "%s ", char)
 	local input = ""
+	local term = false
 	if history then
-		input = ReadLine(replChar, cmdHistory)
-		table.insert(cmdHistory, input)
+		input, term = ReadLine(replChar, cmdHistory)
+		if not term then
+			table.insert(cmdHistory, input)
+		end
 	else
-		input = ReadLine(replChar)
+		input, term = ReadLine(replChar)
 	end
 	local split = string.split(input, " ")
 	local cmd = split[1]
 	table.remove(split, 1)
-	return cmd, split
+	return cmd, split, term
 end
