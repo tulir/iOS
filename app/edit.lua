@@ -14,11 +14,21 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-Aliases = { "nano" }
+Aliases = { "nano", "touch", "rm" }
 FillScreen = true
 
 function Run(alias, args)
 	local function editFile(file, name)
+		if alias == "touch" then
+			fs.open(file, "w").close()
+			io.Cprintfln(colors.cyan, "%s created.", name)
+			return
+		elseif alias == "rm" then
+			fs.delete(file)
+			io.Cprintfln(colors.cyan, "%s removed.", name)
+		elseif alias == "mkdir" then
+		end
+
 		local fsFile = fs.open(file, "r")
 		local dataBefore = nil
 		if fsFile then
