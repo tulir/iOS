@@ -14,7 +14,7 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-_G["string"].split = function(str, sep)
+function string.split(str, sep)
 	local result = {}
 	local regex = ("([^%s]+)"):format(sep)
 	for each in str:gmatch(regex) do
@@ -23,7 +23,15 @@ _G["string"].split = function(str, sep)
 	return result
 end
 
-_G["string"].bytes = function(str)
+function string.startsWith(str, prefix)
+	return str:sub(1, prefix:len()) == prefix
+end
+
+function string.endsWith(str, suffix)
+	return str:sub(-suffix:len()) == suffix
+end
+
+function string.bytes(str)
 	local result = ""
 	str:gsub(".", function(c)
 		result = result .. tostring(string.byte(c)) .. ","
@@ -31,7 +39,7 @@ _G["string"].bytes = function(str)
 	return result
 end
 
-_G["string"].unbytes = function(bytestr)
+function string.unbytes(bytestr)
 	local result = ""
 	bytestr:gsub("([^,]+)", function(c)
 		if string.len(c) == 0 then return end
