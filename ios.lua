@@ -14,30 +14,6 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>
 
--- Set default color
-term.setTextColor(colors.lightGray)
--- Clear the output of the underlying OS
-term.clear()
-term.setCursorPos(1, 1)
-
--- Don't allow termination and other nasty things -> replace pullEvent with pullEventRaw
-os.pullEvent = os.pullEventRaw
--- Allow the Shell API to be accessed in apps and libs
-_G["shell"] = shell
-
--- Set system information
-_G["sys"] = {
-	OSName = "iOS",
-	OSVersion = "0.4.0"
-}
-_G["sys"].NameVersion = sys.OSName .. " " .. sys.OSVersion
-if pocket then _G["sys"].DeviceName = "iPhone"
-else _G["sys"].DeviceName = "iMac" end
-
--- Check if the device is being reloaded (rather than rebooted)
-_G["isReload"] = fs.exists("/.ios/reload")
-_G["noArtificialLag"] = fs.exists("/.ios/nolag")
-
 -- Define the loadFile function that allows lua source files to be loaded
 local filesLoading = {}
 _G["loadFile"] = function(path, required, printInfo)
@@ -102,6 +78,30 @@ _G["loadFile"] = function(path, required, printInfo)
 	filesLoading[path] = nil
 	return tAPI
 end
+
+-- Set default color
+term.setTextColor(colors.lightGray)
+-- Clear the output of the underlying OS
+term.clear()
+term.setCursorPos(1, 1)
+
+-- Don't allow termination and other nasty things -> replace pullEvent with pullEventRaw
+os.pullEvent = os.pullEventRaw
+-- Allow the Shell API to be accessed in apps and libs
+_G["shell"] = shell
+
+-- Set system information
+_G["sys"] = {
+	OSName = "iOS",
+	OSVersion = "0.4.0"
+}
+_G["sys"].NameVersion = sys.OSName .. " " .. sys.OSVersion
+if pocket then _G["sys"].DeviceName = "iPhone"
+else _G["sys"].DeviceName = "iMac" end
+
+-- Check if the device is being reloaded (rather than rebooted)
+_G["isReload"] = fs.exists("/.ios/reload")
+_G["noArtificialLag"] = fs.exists("/.ios/nolag")
 
 -- Create the user data directory if it doesn't exist
 if not fs.isDir("/.ios") then
