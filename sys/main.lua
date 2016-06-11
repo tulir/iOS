@@ -117,7 +117,7 @@ function commandLoop(cmd, args)
 
 	alias = Aliases[cmd]
 	if alias then
-		app = apps[alias]
+		app = Apps[alias]
 		if app then
 			if type(app) ~= "table" or type(app.Run) ~= "function" then
 				io.Cprintfln(colors.red, "App %s (alias %s) wasn't loaded properly. Try load <app>", app, alias)
