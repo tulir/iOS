@@ -26,9 +26,10 @@ os.pullEvent = os.pullEventRaw
 _G["shell"] = shell
 
 -- Set system information
-_G["sys"] = {}
-_G["sys"].OSName = "iOS"
-_G["sys"].OSVersion = "0.4.0"
+_G["sys"] = {
+	OSName = "iOS",
+	OSVersion = "0.4.0"
+}
 _G["sys"].NameVersion = sys.OSName .. " " .. sys.OSVersion
 if pocket then _G["sys"].DeviceName = "iPhone"
 else _G["sys"].DeviceName = "iMac" end
