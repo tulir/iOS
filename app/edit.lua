@@ -59,12 +59,12 @@ function Run(alias, args)
 	elseif #args == 2 then
 		if args[1] == "app" then
 			editFile("/.ios/localapps/" .. args[2] .. ".lua", "App " .. args[2])
-		elseif args[1] == "file" then
-			editFile("/.ios/files/" .. args[2], "File " .. args[2])
+		elseif string.sub(args[2], -4) == ".lua" then
+			io.Cprintln(colors.red, "You may not store lua files outside the app directory.")
 		else
-			io.Cprintfln(colors.red, "Directory \"%s\" not found.", args[1])
+			editFile("/.ios/files/" .. args[1] .. "/" .. args[2], "File " .. args[2])
 		end
 	else
-		io.Cprintfln(colors.red, "Usage: %s [directory] <file>", alias)
+		io.Cprintfln(colors.red, "Usage: %s <file>", alias)
 	end
 end
