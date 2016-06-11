@@ -57,8 +57,11 @@ function Run(alias, args)
 
 	net.Transmit(localPort, serverPort, "login" .. msgSeparator .. c.Flip(pin))
 	c.Flip("SecurityViaObscurity>>LoginFlip")
-	local from, to, message, distance = net.Receive(3)
-	if not from then
+	local from, to, message, distance, term = net.Receive(3)
+	if term then
+		io.Cprintln(colors.red, "Connection terminated.")
+		return
+	elseif not from then
 		io.Cprintfln(colors.red, "Connection to %d timed out.", serverPort)
 		return
 	end
@@ -86,7 +89,10 @@ function Run(alias, args)
 			net.Transmit(localPort, serverPort, message)
 
 			local from, to, message, distance = net.Receive(3)
-			if not from then
+			if term then
+				io.Cprintln(colors.red, "Connection terminated.")
+				return
+			elseif not from then
 				io.Cprintfln(colors.red, "Connection to %d timed out.", serverPort)
 				return
 			end
