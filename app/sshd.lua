@@ -45,7 +45,7 @@ function runString(code, tEnv)
 	if not tEnv.term then tEnv.term = {} end
 	tEnv.term.write = function(text)
 		text = turnToString(text, true)
-		if #out == 0 or not out[#out] or string.sub(out[#out], -1) == "\n" then
+		if #out == 0 or not out[#out] or string.endsWith(out[#out], "\n") then
 			out[#out + 1] = text
 		else
 			out[#out] = out[#out] .. text

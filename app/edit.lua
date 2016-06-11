@@ -58,10 +58,9 @@ function Run(alias, args)
 	end
 
 	if #args == 1 then
-		local suffix = string.sub(args[1], -4)
 		if args[1] == "startup" or args[1] == "startup.lua" then
 			editFile("/.ios/startup.lua", "Startup file")
-		elseif suffix == ".lua" then
+		elseif string.endsWith(args[1], ".lua") then
 			editFile("/.ios/localapps/" .. args[1], "App " .. string.sub(args[1], 1, -5))
 		else
 			editFile("/.ios/files/" .. args[1], "File " .. args[1])

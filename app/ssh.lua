@@ -107,7 +107,7 @@ function Run(alias, args)
 					table.remove(parts, 1)
 					table.remove(parts, 1)
 					msg = table.concat(parts, msgSeparator)
-					if string.sub(msg, 1, 5) == "func>" then
+					if string.startsWith(msg, "func>") then
 						io.Cprint(colors.blue, "Run received function? [y/N] ")
 						local yn = io.ReadLine()
 						if yn == "y" or yn == "Y" then
@@ -115,7 +115,7 @@ function Run(alias, args)
 						end
 					else
 						io.Print(msg)
-						if string.sub(msg, -1) ~= "\n" then
+						if string.endsWith(msg, "\n") then
 							io.Newline()
 						end
 					end
