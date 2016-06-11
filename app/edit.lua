@@ -14,7 +14,7 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-Aliases = { "nano", "touch", "rm" }
+Aliases = { "nano", "touch", "rm", "mkdir" }
 FillScreen = true
 
 function Run(alias, args)
@@ -26,7 +26,14 @@ function Run(alias, args)
 		elseif alias == "rm" then
 			fs.delete(file)
 			io.Cprintfln(colors.cyan, "%s removed.", name)
+			return
 		elseif alias == "mkdir" then
+			fs.makeDir(file)
+			io.Cprintfln(colors.cyan, "Directory %s created.", string.split(name, " ")[2])
+			return
+		elseif fs.isDir(file) then
+			io.Cprintfln(colors.red, "That is a directory.")
+			return
 		end
 
 		local fsFile = fs.open(file, "r")
