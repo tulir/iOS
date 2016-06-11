@@ -14,7 +14,7 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-_G["table"].slice = function(table, st, en)
+function table.slice(table, st, en)
 	local sliced = {}
 	for i = st or 1, en or #table, 1 do
 		sliced[#sliced+1] = tbl[i]
