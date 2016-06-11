@@ -15,43 +15,43 @@
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 function Dots(n, intv, color, newline)
-    if color == nil or not color then
-        color = io.DEFAULT_COLOR
-    end
+	if color == nil or not color then
+		color = io.DEFAULT_COLOR
+	end
 
-    for i=1,n do
-        io.Cprint(color, ".")
-        io.Lag(intv)
-    end
-    if newline then
-        io.Newline()
-    end
+	for i=1,n do
+		io.Cprint(color, ".")
+		io.Lag(intv)
+	end
+	if newline then
+		io.Newline()
+	end
 end
 
 function DotsCustom(n, intvs, color, newline)
-    if color == nil or not color then
-        color = io.DEFAULT_COLOR
-    end
+	if color == nil or not color then
+		color = io.DEFAULT_COLOR
+	end
 
-    for i=1,n do
-        io.Cprint(color, ".")
-        io.Lag(intvs[i])
-    end
-    if newline then
-        io.Newline()
-    end
+	for i=1,n do
+		io.Cprint(color, ".")
+		io.Lag(intvs[i])
+	end
+	if newline then
+		io.Newline()
+	end
 end
 
 function DotsRandom(n, randDiv, color, newline)
-    if color == nil or not color then
-        color = io.DEFAULT_COLOR
-    end
+	if color == nil or not color then
+		color = io.DEFAULT_COLOR
+	end
 
-    for i=1,n do
-        io.Cprint(color, ".")
-        io.Lag(math.random() / randDiv)
-    end
-    if newline then
-        io.Newline()
-    end
+	for i=1,n do
+		io.Cprint(color, ".")
+		io.Lag(math.random() / randDiv)
+	end
+	if newline then
+		io.Newline()
+	end
 end

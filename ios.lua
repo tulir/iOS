@@ -37,66 +37,66 @@ _G["noArtificialLag"] = fs.exists("/.ios/nolag")
 -- Define the loadFile function that allows lua source files to be loaded
 local filesLoading = {}
 _G["loadFile"] = function(path, required, printInfo)
-    local function lag(time)
-        if noArtificialLag or isReload then return
-        else os.sleep(time) end
-    end
+	local function lag(time)
+		if noArtificialLag or isReload then return
+		else os.sleep(time) end
+	end
 
-    local function loadFail()
-        term.setTextColor(colors.red)
-        term.setTextColor(colors.lightGray)
-        if required then
-    		os.sleep(3)
-    		os.shutdown()
-        elseif not isReload then
-            os.sleep(1)
-        end
-    end
+	local function loadFail()
+		term.setTextColor(colors.red)
+		term.setTextColor(colors.lightGray)
+		if required then
+			os.sleep(3)
+			os.shutdown()
+		elseif not isReload then
+			os.sleep(1)
+		end
+	end
 
-    if printInfo then write("Loading " .. path) end
+	if printInfo then write("Loading " .. path) end
 
-    if filesLoading[path] == true then
-        write("\n")
-        printError(path.." is already being loaded")
-        loadFail()
-        return false
-    end
-    filesLoading[path] = true
-    lag(math.random() / 10)
-    if printInfo then write(".") end
-    local tEnv = {}
-    setmetatable(tEnv, {__index = _G})
-    local fnAPI, err = loadfile(path .. ".lua", tEnv)
-    if fnAPI then
-        local ok, err = pcall(fnAPI)
-        if not ok then
-            if printInfo then write("\n") end
-            printError(err)
-            filesLoading[path] = nil
-            loadFail()
-            return false
-        end
-        lag(math.random() / 10)
-        if printInfo then write(".") end
-    else
-        if printInfo then write("\n") end
-        printError(err)
-        filesLoading[path] = nil
-        loadFail()
-        return false
-    end
+	if filesLoading[path] == true then
+		write("\n")
+		printError(path.." is already being loaded")
+		loadFail()
+		return false
+	end
+	filesLoading[path] = true
+	lag(math.random() / 10)
+	if printInfo then write(".") end
+	local tEnv = {}
+	setmetatable(tEnv, {__index = _G})
+	local fnAPI, err = loadfile(path .. ".lua", tEnv)
+	if fnAPI then
+		local ok, err = pcall(fnAPI)
+		if not ok then
+			if printInfo then write("\n") end
+			printError(err)
+			filesLoading[path] = nil
+			loadFail()
+			return false
+		end
+		lag(math.random() / 10)
+		if printInfo then write(".") end
+	else
+		if printInfo then write("\n") end
+		printError(err)
+		filesLoading[path] = nil
+		loadFail()
+		return false
+	end
 
-    local tAPI = {}
-    for k,v in pairs(tEnv) do
-        if k ~= "_ENV" then
-            tAPI[k] =  v
-        end
-    end
-    lag(math.random() / 10)
-    if printInfo then print(".") end
+	local tAPI = {}
+	for k,v in pairs(tEnv) do
+		if k ~= "_ENV" then
+			tAPI[k] =  v
+		end
+	end
+	lag(math.random() / 10)
+	if printInfo then print(".") end
 
-    filesLoading[path] = nil
-    return tAPI
+	filesLoading[path] = nil
+	return tAPI
 end
 
 term.clear()

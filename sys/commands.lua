@@ -27,18 +27,18 @@ function reload()
 end
 
 function reset()
-    io.Cprintln(colors.red, "Are you sure you want to reset everything to factory settings [y/N]?")
-    resp = io.ReadInputString(">", false)
-    if resp == "y" or resp == "Y" then
-        io.Cprint(colors.orange, "Resetting")
-        fs.delete("/.ios")
-        animate.Dots(5, 0.7, colors.orange, true)
-        io.Cprint(colors.blue, "Reset complete. Shutting down.")
-        os.sleep(2)
-        os.shutdown()
-    else
-        io.Cprintln(colors.green, "Reset cancelled.")
-    end
+	io.Cprintln(colors.red, "Are you sure you want to reset everything to factory settings [y/N]?")
+	resp = io.ReadInputString(">", false)
+	if resp == "y" or resp == "Y" then
+		io.Cprint(colors.orange, "Resetting")
+		fs.delete("/.ios")
+		animate.Dots(5, 0.7, colors.orange, true)
+		io.Cprint(colors.blue, "Reset complete. Shutting down.")
+		os.sleep(2)
+		os.shutdown()
+	else
+		io.Cprintln(colors.green, "Reset cancelled.")
+	end
 end
 
 function echo(args)

@@ -18,116 +18,116 @@ VERSION = "SSH 0.1.0"
 msgSeparator = string.char(9)
 
 function runString(code)
-    local func
-    if loadstring then
-        func = loadstring(code)
-    else
-        func = load(code)
-    end
-    local ok, returnVal = pcall(func)
-    if not ok then
-        io.Println(string.sub(returnVal, 13))
-    elseif returnVal then
-        io.Println(returnVal)
-    end
+	local func
+	if loadstring then
+		func = loadstring(code)
+	else
+		func = load(code)
+	end
+	local ok, returnVal = pcall(func)
+	if not ok then
+		io.Println(string.sub(returnVal, 13))
+	elseif returnVal then
+		io.Println(returnVal)
+	end
 end
 
 function Run(args)
-    if not net.enabled then
-        io.Cprintln(colors.red, "No network adapters found!")
-        return
-    end
+	if not net.enabled then
+		io.Cprintln(colors.red, "No network adapters found!")
+		return
+	end
 
-    if #args < 1 then
-        io.Cprintln(colors.red, "Usage: ssh <port>")
-        return
-    end
+	if #args < 1 then
+		io.Cprintln(colors.red, "Usage: ssh <port>")
+		return
+	end
 
-    local serverPort = tonumber(args[1])
-    if serverPort < 1 or serverPort > 65536 then
-        io.Cprintln(colors.red, "The port must be between 1 and 65536")
-        return
-    end
+	local serverPort = tonumber(args[1])
+	if serverPort < 1 or serverPort > 65536 then
+		io.Cprintln(colors.red, "The port must be between 1 and 65536")
+		return
+	end
 
-    io.Cprintln(colors.cyan, "Server PIN")
-    local pin = io.ReadInputString(">", false, "*")
+	io.Cprintln(colors.cyan, "Server PIN")
+	local pin = io.ReadInputString(">", false, "*")
 
-    local c = crypt.New(pin)
-    local localPort = net.OpenRandom()
+	local c = crypt.New(pin)
+	local localPort = net.OpenRandom()
 
-    net.Transmit(localPort, serverPort, "login" .. msgSeparator .. c.Flip(pin))
-    c.Flip("SecurityViaObscurity>>LoginFlip")
-    local from, to, message, distance = net.Receive(3)
-    if not from then
-        io.Cprintfln(colors.red, "Connection to %d timed out.", serverPort)
-        return
-    end
-    local parts = string.split(message, msgSeparator)
-    if parts[1] == "data" then
-        io.Cprintln(colors.cyan, VERSION .. " - Logged in @ " .. from)
-        table.remove(parts, 1)
-        c.Flip(table.concat(parts, msgSeparator))
-    else
-        io.Cprintln(colors.red, "Login to " .. from .. " failed: " .. parts[1])
-        return
-    end
+	net.Transmit(localPort, serverPort, "login" .. msgSeparator .. c.Flip(pin))
+	c.Flip("SecurityViaObscurity>>LoginFlip")
+	local from, to, message, distance = net.Receive(3)
+	if not from then
+		io.Cprintfln(colors.red, "Connection to %d timed out.", serverPort)
+		return
+	end
+	local parts = string.split(message, msgSeparator)
+	if parts[1] == "data" then
+		io.Cprintln(colors.cyan, VERSION .. " - Logged in @ " .. from)
+		table.remove(parts, 1)
+		c.Flip(table.concat(parts, msgSeparator))
+	else
+		io.Cprintln(colors.red, "Login to " .. from .. " failed: " .. parts[1])
+		return
+	end
 
-    local prefix = tostring(serverPort) .. "$ "
-    local cmdHistory = {}
-    while true do
-    	io.Cprint(colors.lime, prefix)
-        local line = io.ReadLine(nil, cmdHistory)
-        if line == "term" then
-            return
-        elseif line and line:len() > 0 then
-            cmdHistory[#cmdHistory + 1] = line
-            local message = "msg" .. msgSeparator .. c.Flip(pin .. msgSeparator .. line)
-            c.Flip("SecurityViaObscurity>>MessageFlip")
-            net.Transmit(localPort, serverPort, message)
+	local prefix = tostring(serverPort) .. "$ "
+	local cmdHistory = {}
+	while true do
+		io.Cprint(colors.lime, prefix)
+		local line = io.ReadLine(nil, cmdHistory)
+		if line == "term" then
+			return
+		elseif line and line:len() > 0 then
+			cmdHistory[#cmdHistory + 1] = line
+			local message = "msg" .. msgSeparator .. c.Flip(pin .. msgSeparator .. line)
+			c.Flip("SecurityViaObscurity>>MessageFlip")
+			net.Transmit(localPort, serverPort, message)
 
-            local from, to, message, distance = net.Receive(3)
-            if not from then
-                io.Cprintfln(colors.red, "Connection to %d timed out.", serverPort)
-                return
-            end
+			local from, to, message, distance = net.Receive(3)
+			if not from then
+				io.Cprintfln(colors.red, "Connection to %d timed out.", serverPort)
+				return
+			end
 
-            local parts = string.split(message, msgSeparator)
-            if parts[1] == "data" then
-                local msg = c.Flip(parts[2])
-                parts = string.split(msg, msgSeparator)
-                if parts[1] == "stop" then
-                    io.Cprintln(colors.cyan, "Connection closed: SSHd stop")
-                    return
-                elseif parts[1] == "logout" then
-                    io.Cprintln(colors.cyan, "Connection closed: Logout")
-                    return
-                elseif parts[1] == "invalidmsg" then
-                    io.Cprintln(colors.yellow, "Failed to send message")
-                elseif parts[1] == "output" then
-                    table.remove(parts, 1)
-                    table.remove(parts, 1)
-                    msg = table.concat(parts, msgSeparator)
-                    if string.sub(msg, 1, 5) == "func>" then
-                        io.Cprint(colors.blue, "Run received function? [y/N] ")
-                        local yn = io.ReadLine()
-                        if yn == "y" or yn == "Y" then
-                            runString(string.sub(msg, 6))
-                        end
-                    else
-                        io.Print(msg)
-                        if string.sub(msg, -1) ~= "\n" then
-                            io.Newline()
-                        end
-                    end
-                else
-                    return
---                    io.Cprintfln(colors.yellow, "Unknown message type: %s", parts[1])
-                end
-            else
-                io.Cprintfln(colors.red, "Failed to send command to %d: %s", from, parts[1])
-                io.Cprintln(colors.red, "Disconnected: Invalid session")
-                return
-            end
-        end
-    end
+			local parts = string.split(message, msgSeparator)
+			if parts[1] == "data" then
+				local msg = c.Flip(parts[2])
+				parts = string.split(msg, msgSeparator)
+				if parts[1] == "stop" then
+					io.Cprintln(colors.cyan, "Connection closed: SSHd stop")
+					return
+				elseif parts[1] == "logout" then
+					io.Cprintln(colors.cyan, "Connection closed: Logout")
+					return
+				elseif parts[1] == "invalidmsg" then
+					io.Cprintln(colors.yellow, "Failed to send message")
+				elseif parts[1] == "output" then
+					table.remove(parts, 1)
+					table.remove(parts, 1)
+					msg = table.concat(parts, msgSeparator)
+					if string.sub(msg, 1, 5) == "func>" then
+						io.Cprint(colors.blue, "Run received function? [y/N] ")
+						local yn = io.ReadLine()
+						if yn == "y" or yn == "Y" then
+							runString(string.sub(msg, 6))
+						end
+					else
+						io.Print(msg)
+						if string.sub(msg, -1) ~= "\n" then
+							io.Newline()
+						end
+					end
+				else
+					return
+--					io.Cprintfln(colors.yellow, "Unknown message type: %s", parts[1])
+				end
+			else
+				io.Cprintfln(colors.red, "Failed to send command to %d: %s", from, parts[1])
+				io.Cprintln(colors.red, "Disconnected: Invalid session")
+				return
+			end
+		end
+	end
 end

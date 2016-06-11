@@ -25,9 +25,9 @@ end
 
 _G["string"].bytes = function(str)
 	local result = ""
-    str:gsub(".", function(c)
+	str:gsub(".", function(c)
 		result = result .. tostring(string.byte(c)) .. ","
-    end)
+	end)
 	return result
 end
 

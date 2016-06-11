@@ -17,5 +17,5 @@
 Aliases = { "help" }
 
 function Run()
-    io.Cprintln(colors.red, "The manpages have not yet been implemented :/")
+	io.Cprintln(colors.red, "The manpages have not yet been implemented :/")
 end

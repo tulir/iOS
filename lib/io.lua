@@ -25,9 +25,9 @@ end
 
 -- Create artificial lag (if enabled)
 function Lag(time, notIfReload)
-    if noArtificialLag then return
-    elseif notIfReload and isReload then return
-    else os.sleep(time) end
+	if noArtificialLag then return
+	elseif notIfReload and isReload then return
+	else os.sleep(time) end
 end
 
 -- Move the cursor to the next line.
@@ -173,12 +173,12 @@ function Cprintln(color, msg)
 end
 
 function WaitKey()
-    while true do
+	while true do
 		local evt, param = os.pullEvent()
-        if evt == "key" and (param == keys.enter or param == keys.numPadEnter) then
-            break
-        end
-    end
+		if evt == "key" and (param == keys.enter or param == keys.numPadEnter) then
+			break
+		end
+	end
 end
 
 -- Read data from the user until the user presses enter.

@@ -16,45 +16,45 @@
 
 modem = peripheral.find("modem")
 if modem == nil then
-    enabled = false
+	enabled = false
 else
-    enabled = true
+	enabled = true
 end
 
 function Open(port)
-    modem.open(port)
+	modem.open(port)
 end
 
 function Close(port)
-    modem.close(port)
+	modem.close(port)
 end
 
 function OpenRandom()
-    local port = math.random(32768, 65536)
-    modem.open(port)
-    return port
+	local port = math.random(32768, 65536)
+	modem.open(port)
+	return port
 end
 
 function Transmit(from, to, data)
-    data = string.bytes(data)
-    modem.transmit(to, from, data)
+	data = string.bytes(data)
+	modem.transmit(to, from, data)
 end
 
 function Receive(timeout)
-    if not timeout then
-        local event, modemSide, targetChannel, replyChannel, message, senderDistance = os.pullEvent("modem_message")
-        message = string.unbytes(message)
-        return replyChannel, targetChannel, message, senderDistance
-    else
-        local timeout = os.startTimer(timeout)
-        while true do
-            event = {os.pullEvent()}
-            if event[1] == "modem_message" then
-                return event[4], event[3], string.unbytes(event[5]), event[6]
-            elseif event[1] == "timer" and event[2] == timeout then
-                return nil, nil, nil, nil
-            end
-        end
-    end
+	if not timeout then
+		local event, modemSide, targetChannel, replyChannel, message, senderDistance = os.pullEvent("modem_message")
+		message = string.unbytes(message)
+		return replyChannel, targetChannel, message, senderDistance
+	else
+		local timeout = os.startTimer(timeout)
+		while true do
+			event = {os.pullEvent()}
+			if event[1] == "modem_message" then
+				return event[4], event[3], string.unbytes(event[5]), event[6]
+			elseif event[1] == "timer" and event[2] == timeout then
+				return nil, nil, nil, nil
+			end
+		end
+	end
 
 end

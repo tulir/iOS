@@ -24,17 +24,17 @@ function Init()
 		_G["sys"].Owner = io.ReadInputString(">", false)
 		io.Cprintfln(colors.lime, "Hello, %s.", sys.Owner)
 		io.Lag(0.5)
-        io.Cprintln(colors.lime, "What's the name of this computer?")
-        _G["sys"].Name = io.ReadInputString(">", false)
+		io.Cprintln(colors.lime, "What's the name of this computer?")
+		_G["sys"].Name = io.ReadInputString(">", false)
 		SetNewPin()
-        return true
+		return true
 	end
 
 	file = fs.open(".ios/auth", "r")
 	pin = file.readLine()
 	_G["sys"].Owner = file.readLine()
 	_G["sys"].Name = file.readLine()
-    return false
+	return false
 end
 
 -- Ask the user for a new PIN.
@@ -57,41 +57,41 @@ function SetNewPin()
 	file.writeLine(sys.Owner)
 	file.writeLine(sys.Name)
 	file.close()
-    io.Cprintln(colors.lime, "PIN updated successfully.")
+	io.Cprintln(colors.lime, "PIN updated successfully.")
 end
 
 -- Prompt the user for the PIN code.
 function PINPrompt()
-    if not pin or string.len(pin) == 0 then
-        io.Clear()
-        io.Cprintln(colors.orange, "\n\n" .. sys.Owner .. "'s " .. sys.DeviceName .. " (locked)")
-        io.Cprintln(colors.lime, "\nPress enter to unlock.")
-        io.WaitKey()
-    else
-    	local showIncorrectPIN = false
-    	while true do
-    		io.Clear()
-            io.Cprintln(colors.orange, "\n\n" .. sys.Owner .. "'s " .. sys.DeviceName .. " (locked)")
-    		if showIncorrectPIN then io.Cprintln(colors.red, "Incorrect PIN!\n")
-    		else io.Print("\n\n") end
-    		local givenPIN = io.ReadInputString("  PIN >", false, "*")
-    		if not givenPIN or string.len(givenPIN) == 0 then
-    			showIncorrectPIN = false
-    		elseif pin == givenPIN then
-    			break
-    		else
-    			showIncorrectPIN = true
-    		end
-    	end
-    end
+	if not pin or string.len(pin) == 0 then
+		io.Clear()
+		io.Cprintln(colors.orange, "\n\n" .. sys.Owner .. "'s " .. sys.DeviceName .. " (locked)")
+		io.Cprintln(colors.lime, "\nPress enter to unlock.")
+		io.WaitKey()
+	else
+		local showIncorrectPIN = false
+		while true do
+			io.Clear()
+			io.Cprintln(colors.orange, "\n\n" .. sys.Owner .. "'s " .. sys.DeviceName .. " (locked)")
+			if showIncorrectPIN then io.Cprintln(colors.red, "Incorrect PIN!\n")
+			else io.Print("\n\n") end
+			local givenPIN = io.ReadInputString("  PIN >", false, "*")
+			if not givenPIN or string.len(givenPIN) == 0 then
+				showIncorrectPIN = false
+			elseif pin == givenPIN then
+				break
+			else
+				showIncorrectPIN = true
+			end
+		end
+	end
 	io.Clear()
-    io.Cprintfln(colors.blue, "Welcome, %s", sys.Owner)
+	io.Cprintfln(colors.blue, "Welcome, %s", sys.Owner)
 end
 
 function CheckPIN(givenPIN)
-    return givenPIN == pin
+	return givenPIN == pin
 end
 
 function NewCrypt()
-    return crypt.New(pin)
+	return crypt.New(pin)
 end
