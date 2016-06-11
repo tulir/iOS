@@ -14,13 +14,15 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+Aliases = { "list", "dir" }
+
 function Run(alias, args)
 	local files = {}
 	local directories = {}
 	local dir = nil
 	local longestName = 0
 	local w, h = term.getSize()
-	local maxLength = w - 6
+	local maxLength = w - 7
 
 	if #args == 0 then
 		directories["app"] = "N/A"
@@ -50,10 +52,17 @@ function Run(alias, args)
 				longestName = len
 			end
 
-			if fs.isDir(file) then directories[name] = fs.getSize(dir .. "/" .. file)
-			else files[name] = fs.getSize(dir .. "/" .. file) end
+			local size = fs.getSize(dir .. "/" .. file)
+			if size > 999999 then
+				size = string.sub(tostring(size), 1, 4) .. ".."
+			end
+
+			if fs.isDir(dir .. "/" .. file) then directories[name] = "N/A"
+			else files[name] = size end
 		end
 	end
+	table.sort(directories)
+	table.sort(files)
 
 	local x, y = term.getCursorPos()
 	term.setTextColor(colors.white)
@@ -64,30 +73,44 @@ function Run(alias, args)
 	term.write("dir")
 	term.setTextColor(colors.cyan)
 	term.write(" name")
-	term.setCursorPos(maxLength, y)
+	term.setCursorPos(maxLength + 2, y)
 	term.write("Size")
 	io.Newline()
 
-	local function printFile(file, size)
-		x, y = term.getCursorPos()
-		term.write(file)
-		term.setCursorPos(maxLength, y)
-		term.write(size)
-		io.Newline()
-	end
-
 	term.setTextColor(colors.green)
-	for file, size in pairs(directories) do
-		printFile(file, size)
+	for file, size in pairsByKeys(directories) do
+		printFile(file, size, maxLength)
 	end
 
 	term.setTextColor(colors.white)
-	for file, size in pairs(files) do
+	for file, size in pairsByKeys(files) do
 		if string.endsWith(file, ".lua") then
 			file = string.sub(file, 1, string.len(file) - 4)
 		end
-		printFile(file, size)
+		printFile(file, size, maxLength)
 	end
 
 	term.setTextColor(io.DEFAULT_COLOR)
+end
+
+function pairsByKeys (t, f)
+	local a = {}
+	for n in pairs(t) do table.insert(a, n) end
+		table.sort(a, f)
+		local i = 0      -- iterator variable
+		local iter = function ()   -- iterator function
+			i = i + 1
+			if a[i] == nil then return nil
+			else return a[i], t[a[i]]
+		end
+	end
+	return iter
+end
+
+function printFile(file, size, max)
+	x, y = term.getCursorPos()
+	term.write(file)
+	term.setCursorPos(max + 2, y)
+	term.write(size)
+	io.Newline()
 end
