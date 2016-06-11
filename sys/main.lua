@@ -92,24 +92,24 @@ function Loop()
 	while true do
 		cmd, args = io.ReadInput("$", true)
 		if cmd == "exit" then break
-		elseif cmd then commandLoop(cmd, args) end
+		elseif cmd then HandleCommand(cmd, args) end
 	end
 	if startup.PostLoop then startup.PostLoop() end
 end
 
-function commandRun(func, alias, args)
+function runCommandFunc(func, alias, args)
 	local success, msg = pcall(func, alias, args)
 	if not success then io.Cprintln(colors.red, msg) end
 end
 
-function commandLoop(cmd, args)
+function HandleCommand(cmd, args)
 	app = Apps[cmd]
 	if app then
 		if type(app) ~= "table" or type(app.Run) ~= "function" then
 			io.Cprintfln(colors.red, "App %s wasn't loaded properly. Try load <app>", app)
 		else
 			_G["runningApp"] = app
-			commandRun(app.Run, cmd, args)
+			runCommandFunc(app.Run, cmd, args)
 			_G["runningApp"] = nil
 		end
 		return
@@ -123,7 +123,7 @@ function commandLoop(cmd, args)
 				io.Cprintfln(colors.red, "App %s (alias %s) wasn't loaded properly. Try load <app>", app, alias)
 			else
 				_G["runningApp"] = app
-				commandRun(app.Run, cmd, args)
+				runCommandFunc(app.Run, cmd, args)
 				_G["runningApp"] = nil
 			end
 			return
@@ -132,7 +132,7 @@ function commandLoop(cmd, args)
 
 	func = commands[cmd]
 	if func then
-		commandRun(func, cmd, args)
+		runCommandFunc(func, cmd, args)
 		return
 	end
 
