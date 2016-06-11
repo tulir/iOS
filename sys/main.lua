@@ -102,35 +102,27 @@ function runCommandFunc(func, alias, args)
 	if not success then io.Cprintln(colors.red, msg) end
 end
 
-function HandleCommand(cmd, args)
-	app = Apps[cmd]
+function runApp(app, alias, args)
 	if app then
 		if type(app) ~= "table" or type(app.Run) ~= "function" then
-			io.Cprintfln(colors.red, "App %s wasn't loaded properly. Try load <app>", app)
+			io.Cprintfln(colors.red, "App %s (alias %s) wasn't loaded properly. Try load <app>", app, alias)
 		else
 			_G["runningApp"] = app
 			runCommandFunc(app.Run, cmd, args)
 			_G["runningApp"] = nil
 		end
-		return
+		return true
 	end
+	return false
+end
 
-	alias = Aliases[cmd]
-	if alias then
-		app = Apps[alias]
-		if app then
-			if type(app) ~= "table" or type(app.Run) ~= "function" then
-				io.Cprintfln(colors.red, "App %s (alias %s) wasn't loaded properly. Try load <app>", app, alias)
-			else
-				_G["runningApp"] = app
-				runCommandFunc(app.Run, cmd, args)
-				_G["runningApp"] = nil
-			end
-			return
-		end
-	end
+function HandleCommand(cmd, args)
+	if runApp(Apps[cmd], cmd, args) then return end
 
-	func = commands[cmd]
+	local alias = Aliases[cmd]
+	if alias and runApp(Apps[alias], cmd, args) then return end
+
+	local func = commands[cmd]
 	if func then
 		runCommandFunc(func, cmd, args)
 		return
