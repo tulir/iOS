@@ -28,8 +28,8 @@ end
 
 function reset()
 	io.Cprintln(colors.red, "Are you sure you want to reset everything to factory settings [y/N]?")
-	resp = io.ReadInputString(">", false)
-	if resp == "y" or resp == "Y" then
+	resp, termd = io.ReadInputString(">", false)
+	if not termd and (resp == "y" or resp == "Y") then
 		io.Cprint(colors.orange, "Resetting")
 		fs.delete("/.ios")
 		animate.Dots(5, 0.7, colors.orange, true)

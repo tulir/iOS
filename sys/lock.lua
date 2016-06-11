@@ -21,11 +21,17 @@ function Init()
 	if not fs.exists(".ios/auth") then
 		io.Cprintln(colors.green, "I don't think I know you.")
 		io.Cprintln(colors.lime, "What should I call you?")
-		_G["sys"].Owner = io.ReadInputString(">", false)
+		local termd = true
+		while termd do
+			_G["sys"].Owner, termd = io.ReadInputString(">", false)
+		end
 		io.Cprintfln(colors.lime, "Hello, %s.", sys.Owner)
 		io.Lag(0.5)
 		io.Cprintln(colors.lime, "What's the name of this computer?")
-		_G["sys"].Name = io.ReadInputString(">", false)
+		termd = true
+		while termd do
+			_G["sys"].Name, termd = io.ReadInputString(">", false)
+		end
 		SetNewPin()
 		return true
 	end
@@ -41,9 +47,17 @@ end
 function SetNewPin()
 	while true do
 		io.Cprintln(colors.lime, "Enter a PIN code")
-		local pin1 = io.ReadInputString(">", false, "*")
+		local pin1 = ""
+		local pin2 = ""
+		local termd = true
+		while termd do
+			pin1, termd = io.ReadInputString(">", false, "*")
+		end
 		io.Cprintln(colors.lime, "Enter the same PIN again")
-		local pin2 = io.ReadInputString(">", false, "*")
+		termd = true
+		while term do
+			pin2, termd = io.ReadInputString(">", false, "*")
+		end
 		if pin1 == pin2 then
 			pin = pin1
 			break
@@ -68,19 +82,19 @@ function PINPrompt()
 		io.Cprintln(colors.lime, "\nPress enter to unlock.")
 		io.WaitKey()
 	else
-		local showIncorrectPIN = false
+		local errorMsg = ""
 		while true do
 			io.Clear()
 			io.Cprintln(colors.orange, "\n\n" .. sys.Owner .. "'s " .. sys.DeviceName .. " (locked)")
-			if showIncorrectPIN then io.Cprintln(colors.red, "Incorrect PIN!\n")
-			else io.Print("\n\n") end
-			local givenPIN = io.ReadInputString("  PIN >", false, "*")
-			if not givenPIN or string.len(givenPIN) == 0 then
-				showIncorrectPIN = false
+			io.Cprintln(colors.red, errorMsg)
+			io.Newline()
+			local givenPIN, termd = io.ReadInputString("  PIN >", false, "*")
+			if termd or not givenPIN or string.len(givenPIN) == 0 then
+				errorMsg = ""
 			elseif pin == givenPIN then
 				break
 			else
-				showIncorrectPIN = true
+				errorMsg = "Incorrect PIN!"
 			end
 		end
 	end
