@@ -117,12 +117,12 @@ if not startup then startup = {} end
 -- Load system scripts
 _G["main"] = loadFile("/sys/main", true, not isReload)
 _G["lock"] = loadFile("/sys/lock", true, not isReload)
-_G["commands"] = loadFile("/sys/commands", true, not isReload)
 
 if startup.PreLibs then startup.PreLibs() end
 main.LoadLibs() -- Load libraries
 if startup.PreApps then startup.PreApps() end
 main.LoadApps() -- Load system and user apps
+_G["commands"] = loadFile("/sys/commands", true, not isReload)
 if startup.PreLogin then startup.PreLogin() end
 main.StartupLock() -- Activate the startup lock
 
