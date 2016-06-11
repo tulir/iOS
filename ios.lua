@@ -16,6 +16,9 @@
 
 -- Set default color
 term.setTextColor(colors.lightGray)
+-- Clear the output of the underlying OS
+term.clear()
+term.setCursorPos(1, 1)
 
 -- Don't allow termination and other nasty things -> replace pullEvent with pullEventRaw
 os.pullEvent = os.pullEventRaw
@@ -98,9 +101,6 @@ _G["loadFile"] = function(path, required, printInfo)
 	filesLoading[path] = nil
 	return tAPI
 end
-
-term.clear()
-term.setCursorPos(1, 1)
 
 -- Create the user data directory if it doesn't exist
 if not fs.isDir("/.ios") then
