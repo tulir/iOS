@@ -97,8 +97,8 @@ function Loop()
 	if startup.PostLoop then startup.PostLoop() end
 end
 
-function commandRun(func, args)
-	local success, msg = pcall(func, args)
+function commandRun(func, alias, args)
+	local success, msg = pcall(func, alias, args)
 	if not success then io.Cprintln(colors.red, msg) end
 end
 
@@ -109,7 +109,7 @@ function commandLoop(cmd, args)
 			io.Cprintfln(colors.red, "App %s wasn't loaded properly. Try load <app>", app)
 		else
 			_G["runningApp"] = app
-			commandRun(app.Run, args)
+			commandRun(app.Run, cmd, args)
 			_G["runningApp"] = nil
 		end
 		return
@@ -123,7 +123,7 @@ function commandLoop(cmd, args)
 				io.Cprintfln(colors.red, "App %s (alias %s) wasn't loaded properly. Try load <app>", app, alias)
 			else
 				_G["runningApp"] = app
-				commandRun(app.Run, args)
+				commandRun(app.Run, cmd, args)
 				_G["runningApp"] = nil
 			end
 			return
@@ -132,7 +132,7 @@ function commandLoop(cmd, args)
 
 	func = commands[cmd]
 	if func then
-		commandRun(func, args)
+		commandRun(func, cmd, args)
 		return
 	end
 

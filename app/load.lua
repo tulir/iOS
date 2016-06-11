@@ -14,7 +14,7 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-function Run(args)
+function Run(alias, args)
 	if #args ~= 2 then
 		io.Cprintln(colors.red, "Usage: load <g/l> <app>")
 		return

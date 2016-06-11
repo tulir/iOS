@@ -16,7 +16,7 @@
 
 Aliases = { "rs" }
 
-function Run(args)
+function Run(alias, args)
 	if #args == 2 then
 		args[1] = args[1]:lower()
 		if isSide(args[1]) then

@@ -41,6 +41,6 @@ function reset()
 	end
 end
 
-function echo(args)
+function echo(alias, args)
 	io.Println(table.concat(args, " "))
 end

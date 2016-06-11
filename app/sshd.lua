@@ -18,7 +18,7 @@ VERSION = "SSHd 0.1.0"
 msgSeparator = string.char(9)
 sessions = {}
 
-function Run(args)
+function Run(alias, args)
 	if not net.enabled then
 		io.Cprintln(colors.red, "No network adapters found!")
 		return

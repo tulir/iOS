@@ -17,7 +17,7 @@
 Aliases = { "nano" }
 FillScreen = true
 
-function Run(args)
+function Run(alias, args)
 	local function editFile(file, name)
 		local fsFile = fs.open(file, "r")
 		local dataBefore = nil
@@ -65,6 +65,6 @@ function Run(args)
 			io.Cprintfln(colors.red, "Directory \"%s\" not found.", args[1])
 		end
 	else
-		io.Cprintln(colors.red, "Usage: edit [directory] <file>")
+		io.Cprintfln(colors.red, "Usage: %s [directory] <file>", alias)
 	end
 end

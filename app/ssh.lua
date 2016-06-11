@@ -32,7 +32,7 @@ function runString(code)
 	end
 end
 
-function Run(args)
+function Run(alias, args)
 	if not net.enabled then
 		io.Cprintln(colors.red, "No network adapters found!")
 		return
