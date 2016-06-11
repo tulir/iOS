@@ -43,16 +43,18 @@ end
 function Receive(timeout)
 	if not timeout then
 		local event, modemSide, targetChannel, replyChannel, message, senderDistance = os.pullEvent("modem_message")
+		if event == "terminate" then error("Terminated", 0) end
 		message = string.unbytes(message)
-		return replyChannel, targetChannel, message, senderDistance
+		return replyChannel, targetChannel, message, senderDistance, false
 	else
 		local timeout = os.startTimer(timeout)
 		while true do
 			event = {os.pullEvent()}
-			if event[1] == "modem_message" then
-				return event[4], event[3], string.unbytes(event[5]), event[6]
+			if event[1] == "terminate" then error("Terminated", 0)
+			elseif event[1] == "modem_message" then
+				return event[4], event[3], string.unbytes(event[5]), event[6], false
 			elseif event[1] == "timer" and event[2] == timeout then
-				return nil, nil, nil, nil
+				return nil, nil, nil, nil, false
 			end
 		end
 	end
