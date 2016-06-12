@@ -145,44 +145,44 @@ end
 
 -- Format the given message with the given arguments and print it.
 function Printf(msg, ...)
-	Print(msg:format(...))
+	return Print(msg:format(...))
 end
 
 -- Format the given message with the given arguments, then print it and add a newline.
 function Printfln(msg, ...)
-	Print(msg:format(...))
-	Newline()
+	return Println(msg:format(...))
 end
 
 -- Print the given message and add a newline.
 function Println(msg)
-	Print(msg)
+	local lines = Print(msg)
 	Newline()
-	prevIO = os.clock()
+	return lines
 end
 
 -- Print the given message using the given color.
 function Cprint(color, msg)
 	SetColor(color)
-	Print(msg)
+	local lines = Print(msg)
 	SetColor(DEFAULT_COLOR)
+	return lines
 end
 
 -- Format the given message with the given arguments, then print it using the given color.
 function Cprintf(color, msg, ...)
-	Cprint(color, msg:format(...))
+	return Cprint(color, msg:format(...))
 end
 
 -- Format the given message with the given arguments, then print it using the given color and finally add a newline.
 function Cprintfln(color, msg, ...)
-	Cprint(color, msg:format(...))
-	Newline()
+	return Cprintln(color, msg:format(...))
 end
 
 -- Print the given message using the given color and add a newline.
 function Cprintln(color, msg)
-	Cprint(color, msg)
+	local lines = Cprint(color, msg)
 	Newline()
+	return lines
 end
 
 -- Wait for the user to press enter
