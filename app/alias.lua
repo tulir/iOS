@@ -19,8 +19,16 @@ UserAliases = {}
 
 function Run(alias, args)
 	if alias == "alias" then
-		if #args > 1 then
-			local cmd = args[1]
+		if #args == 1 then
+			local cmd = args[1]:lower()
+			local target = UserAliases[cmd]
+			if target then
+				io.Cprintfln(colors.cyan, "%s is aliased to %s", cmd, target)
+			else
+				io.Cprintfln(colors.red, "%s is not aliased.", cmd)
+			end
+		elseif #args > 1 then
+			local cmd = args[1]:lower()
 			table.remove(args, 1)
 			local target = table.concat(args, " ")
 			AddAlias(cmd, target)
@@ -38,16 +46,16 @@ function Run(alias, args)
 	end
 end
 
-function LoadAliases()
-	animate.DotsRandom("Loading user aliases", 3, 10)
+function LoadAliases(quick)
+	if not quick then animate.DotsRandom("Loading user aliases", 3, 10) end
 	local file = fs.open("/.ios/aliases", "r")
 	local data = file.readAll()
 	file.close()
 	UserAliases = table.fromString(data)
 end
 
-function SaveAliases()
-	animate.DotsRandom("Saving user aliases", 3, 10)
+function SaveAliases(quick)
+	if not quick then animate.DotsRandom("Saving user aliases", 3, 10) end
 	local file = fs.open("/.ios/aliases", "w")
 	local data = table.toString(UserAliases)
 	file.write(data)
@@ -56,12 +64,12 @@ end
 
 function AddAlias(alias, cmd)
 	UserAliases[alias] = cmd
-	SaveAliases()
+	SaveAliases(true)
 end
 
 function RemoveAlias(alias)
 	UserAliases[alias] = nil
-	SaveAliases()
+	SaveAliases(true)
 end
 
 function HandleAlias(cmd, args)
