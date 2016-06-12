@@ -91,12 +91,24 @@ if not fs.isDir("/.ios") then
 	fs.open("/.ios/startup.lua", "w").close()
 end
 
+local function printLoad(file)
+	write("Loading " .. file)
+	for i = 1, 3 do
+		write(".")
+		os.sleep(math.random() / 10)
+	end
+	write("\n")
+end
+
 -- Load the user startup script
+printLoad("/.ios/startup")
 _G["startup"] = loadFile("/.ios/startup")
 if not _G["startup"] then _G["startup"] = {} end
 
 -- Load system scripts
+printLoad("/sys/main")
 _G["main"] = loadFile("/sys/main", true)
+printLoad("/sys/lock")
 _G["lock"] = loadFile("/sys/lock", true)
 
 if startup.PreLibs then startup.PreLibs() end
