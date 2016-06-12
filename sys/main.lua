@@ -119,6 +119,10 @@ end
 
 function HandleCommand(cmd, args)
 	cmd = cmd:lower()
+	if Apps["alias"] then
+		cmd, args = Apps["alias"].HandleAlias(cmd, args)
+	end
+
 	if runApp(Apps[cmd], cmd, args) then return end
 
 	local alias = Aliases[cmd]
