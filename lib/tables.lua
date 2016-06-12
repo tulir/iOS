@@ -34,11 +34,13 @@ end
 function table.fromString(str)
 	local result = {}
 	for line in str:gmatch(("([^%s]+)"):format("\n")) do
-		local parts = string.split(line, "=")
-		local key = parts[1]
-		table.remove(parts, 1)
-		local value = table.concat(parts, "=")
-		result[key] = value
+		if line and string.len(line) > 0 then
+			local parts = string.split(line, "=")
+			local key = parts[1]
+			table.remove(parts, 1)
+			local value = table.concat(parts, "=")
+			result[key] = value
+		end
 	end
 	return result
 end
