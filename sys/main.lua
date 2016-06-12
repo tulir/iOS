@@ -57,15 +57,15 @@ function LoadApp(dir, file, isReload)
 end
 
 function LoadApps(isReload)
-	for _, file in ipairs(fs.list("/app")) do
-		LoadApp("/app/", file, isReload)
-	end
-
 	if not isReload then
 		io.Printf("Loading /sys/commands")
 		animate.DotsRandom(3, 10, io.DEFAULT_COLOR, true)
 	end
 	_G["commands"] = loadFile("/sys/commands", true, isReload)
+
+	for _, file in ipairs(fs.list("/app")) do
+		LoadApp("/app/", file, isReload)
+	end
 
 	for _, file in ipairs(fs.list("/.ios/localapps")) do
 		LoadApp("/.ios/localapps/", file, isReload)
