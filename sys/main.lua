@@ -87,7 +87,7 @@ end
 function TimeUpdater()
 	while true do
 		if not runningApp or not runningApp.FillScreen then io.FooterTime() end
-		os.sleep(0.5)
+		os.sleep(0.2)
 	end
 end
 
