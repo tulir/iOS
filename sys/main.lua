@@ -38,7 +38,7 @@ end
 function LoadApp(dir, file, isReload)
 	file = string.sub(file, 1, string.len(file) - 4)
 	if not isReload then
-		io.Printf("Loading %s%s", dir, file)
+		io.Printf("Loading /app/%s", file)
 		animate.DotsRandom(3, 10, io.DEFAULT_COLOR, true)
 	end
 	local app = loadFile(dir .. file, false, isReload)
