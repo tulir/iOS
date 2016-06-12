@@ -78,12 +78,12 @@ function Run(alias, args)
 	io.Newline()
 
 	term.setTextColor(colors.green)
-	for file, size in pairsByKeys(directories) do
+	for file, size in table.pairsByKeys(directories) do
 		printFile(file, size, maxLength)
 	end
 
 	term.setTextColor(colors.white)
-	for file, size in pairsByKeys(files) do
+	for file, size in table.pairsByKeys(files) do
 		if string.endsWith(file, ".lua") then
 			file = string.sub(file, 1, string.len(file) - 4)
 		end
@@ -91,20 +91,6 @@ function Run(alias, args)
 	end
 
 	term.setTextColor(io.DEFAULT_COLOR)
-end
-
-function pairsByKeys (t, f)
-	local a = {}
-	for n in pairs(t) do table.insert(a, n) end
-		table.sort(a, f)
-		local i = 0      -- iterator variable
-		local iter = function ()   -- iterator function
-			i = i + 1
-			if a[i] == nil then return nil
-			else return a[i], t[a[i]]
-		end
-	end
-	return iter
 end
 
 function printFile(file, size, max)
