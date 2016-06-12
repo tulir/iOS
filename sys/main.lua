@@ -133,16 +133,19 @@ function runApp(app, alias, args)
 	return false
 end
 
+function GetApp(name)
+	if Apps[name] then return Apps[name]
+	elseif Aliases[name] and Apps[Aliases[name]] then return Apps[Aliases[name]]
+	else return nil end
+end
+
 function HandleCommand(cmd, args)
 	cmd = cmd:lower()
 	if Apps["alias"] then
 		cmd, args = Apps["alias"].HandleAlias(cmd, args)
 	end
 
-	if runApp(Apps[cmd], cmd, args) then return end
-
-	local alias = Aliases[cmd]
-	if alias and runApp(Apps[alias], cmd, args) then return end
+	if runApp(GetApp(cmd), cmd, args) then return end
 
 	local func = commands[cmd]
 	if func then
