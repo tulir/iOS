@@ -25,27 +25,35 @@ function Run(alias, args)
 			|Reloading       |
 			|----------------|
 		]]--
-		term.setCursorPos(w / 2 - 8, h / 2 - 1)
+		term.setCursorPos(w / 2 - 8, 2)
 		io.Cprint(colors.cyan, "|----------------|")
 
-		term.setCursorPos(w / 2 - 8, h / 2)
+		term.setCursorPos(w / 2 - 8, 3)
 		io.Cprint(colors.cyan, "|")
 		io.Cprint(colors.blue, "Reloading")
-		term.setCursorPos(w / 2 + 9, h / 2)
+		term.setCursorPos(w / 2 + 9, 3)
 		io.Cprint(colors.cyan, "|")
 
-		term.setCursorPos(w / 2 - 8, h / 2 + 1)
+		term.setCursorPos(w / 2 - 8, 4)
 		io.Cprint(colors.cyan, "|----------------|")
 
-		term.setCursorPos(w / 2 + 2, h / 2)
+		term.setCursorPos(w / 2 + 2, 3)
 
 		-- Animates dots into the box while reloading libraries, apps and commands
 		animate.DotsRandom(1, 3, colors.blue)
+
+		term.setCursorPos(1, 5)
 		main.LoadLibs(true)
+		term.setCursorPos(w / 2 + 3, 3)
+
 		animate.DotsRandom(3, 3, colors.blue)
+
+		term.setCursorPos(1, 5)
 		main.Apps = {}
 		main.Aliases = {}
 		main.LoadApps(true)
+		term.setCursorPos(w / 2 + 6, 3)
+
 		animate.DotsRandom(3, 3, colors.blue)
 
 		main.Welcome()
