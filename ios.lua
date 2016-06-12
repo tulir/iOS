@@ -114,6 +114,7 @@ _G["lock"] = loadFile("/sys/lock", true)
 
 if startup.PreLibs then startup.PreLibs() end
 main.LoadLibs() -- Load libraries
+io.Footer()
 if startup.PreApps then startup.PreApps() end
 main.LoadApps() -- Load system and user apps
 
