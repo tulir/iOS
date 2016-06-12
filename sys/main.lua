@@ -20,7 +20,7 @@ Aliases = {}
 function LoadLibs(isReload)
 	for _, file in ipairs(fs.list("/lib")) do
 		file = string.sub(file, 1, string.len(file) - 4)
-		print("Loading /lib/" .. file)
+		write("Loading /lib/" .. file)
 		for i = 1, 3 do
 			write(".")
 			os.sleep(math.random() / 10)
