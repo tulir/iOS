@@ -98,6 +98,13 @@ function Print(msg)
 	local w, h = term.getSize()
 	local x, y = term.getCursorPos()
 
+	local lines = 0
+	local function newline()
+		Newline()
+		x, y = term.getCursorPos()
+		lines = lines + 1
+	end
+
 	while string.len(msg) > 0 do
 		local whitespace = string.match(msg, "^[ \t]+")
 		if whitespace then
@@ -107,8 +114,7 @@ function Print(msg)
 		end
 
 		if string.match(msg, "^\n") then
-			Newline()
-			x, y = term.getCursorPos()
+			newline()
 			msg = string.sub(msg, 2)
 		end
 
@@ -118,8 +124,7 @@ function Print(msg)
 			if string.len(text) > w then
 				while string.len(text) > 0 do
 					if x > w then
-						Newline()
-						x, y = term.getCursorPos()
+						newline()
 					end
 					term.write(text)
 					text = string.sub(text, (w-x) + 2)
@@ -127,8 +132,7 @@ function Print(msg)
 				end
 			else
 				if x + string.len(text) - 1 > w then
-					Newline()
-					x, y = term.getCursorPos()
+					newline()
 				end
 				term.write(text)
 				x, y = term.getCursorPos()
@@ -136,6 +140,7 @@ function Print(msg)
 		end
 	end
 	prevIO = os.clock()
+	return lines
 end
 
 -- Format the given message with the given arguments and print it.
