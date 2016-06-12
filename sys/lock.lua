@@ -55,7 +55,7 @@ function SetNewPin()
 		end
 		io.Cprintln(colors.lime, "Enter the same PIN again")
 		termd = true
-		while term do
+		while termd do
 			pin2, termd = io.ReadInputString(">", false, "*")
 		end
 		if pin1 == pin2 then
