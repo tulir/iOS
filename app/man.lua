@@ -17,7 +17,16 @@
 Aliases = { "help", "manual" }
 FillScreen = false
 
-Man = [[Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed posuere interdum sem. Quisque ligula eros ullamcorper quis, lacinia quis facilisis sed sapien. Mauris varius diam vitae arcu. Sed arcu lectus auctor vitae, consectetuer et venenatis eget velit. Sed augue orci, lacinia eu tincidunt et eleifend nec lacus. Donec ultricies nisl ut felis, suspendisse potenti. Lorem ipsum ligula ]]
+Man = [[NAME
+> man - an interface for application manuals
+
+DESCRIPTION
+> man is the system's manual pager. It displays manual pages defined by apps.
+
+> Apps can define their own manual pages by setting the `Man` variable.
+
+> Manual pages support basic tabs using greater than (`>`) characters.
+]]
 
 function Run(alias, args)
 	if #args == 0 then
@@ -95,9 +104,24 @@ function printAndString(msg)
 		end
 	end
 
+	local currentWs = 0
+	local ws = "	"
+	if sys.DeviceName == "iPhone" then ws = "  " end
+
+	local function printWs()
+		if currentWs > 0 then
+			for i = 1, currentWs do
+				writeLine(ws)
+				term.write(ws)
+			end
+			x, y = term.getCursorPos()
+		end
+	end
+
 	local function newline()
 		io.Newline()
 		writeLine("\n")
+		printWs()
 		x, y = term.getCursorPos()
 	end
 
@@ -112,7 +136,15 @@ function printAndString(msg)
 
 		if string.match(msg, "^\n") then
 			newline()
+			currentWs = 0
 			msg = string.sub(msg, 2)
+		end
+
+		whitespace = string.match(msg, "^[> ]+")
+		if whitespace then
+			currentWs = string.len(whitespace) - 1
+			printWs()
+			msg = string.sub(msg, string.len(whitespace) + 1)
 		end
 
 		local text = string.match(msg, "^[^ \t\n]+")
