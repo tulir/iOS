@@ -79,8 +79,8 @@ function PINPrompt()
 	if not pin or string.len(pin) == 0 then
 		io.Clear()
 		io.Cprintln(colors.orange, "\n\n" .. sys.Owner .. "'s " .. sys.DeviceName .. " (locked)")
-		io.Cprintln(colors.lime, "\nPress enter to unlock.")
-		io.WaitEnter()
+		io.Cprintln(colors.lime, "\nPress any key to unlock.")
+		io.WaitKey()
 	else
 		local errorMsg = ""
 		while true do
