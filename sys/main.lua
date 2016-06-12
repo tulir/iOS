@@ -113,7 +113,7 @@ function runApp(app, alias, args)
 			end
 		else
 			_G["runningApp"] = app
-			runCommandFunc(app.Run, cmd, args)
+			runCommandFunc(app.Run, alias, args)
 			_G["runningApp"] = nil
 		end
 		return true
