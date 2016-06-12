@@ -111,7 +111,7 @@ end
 
 -- Load the user startup script
 _G["startup"] = loadFile("/.ios/startup")
-if not startup then startup = {} end
+if not _G["startup"] then _G["startup"] = {} end
 
 -- Load system scripts
 _G["main"] = loadFile("/sys/main", true)
