@@ -14,11 +14,13 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-function Dots(n, intv, color, newline)
-	if color == nil or not color then
+function Dots(n, intv, color, newline, prefix)
+	if isReload then return
+	elseif color == nil or not color then
 		color = io.DEFAULT_COLOR
 	end
 
+		io.Cprint(color, prefix)
 	for i=1,n do
 		io.Cprint(color, ".")
 		io.Lag(intv)
@@ -28,11 +30,13 @@ function Dots(n, intv, color, newline)
 	end
 end
 
-function DotsCustom(n, intvs, color, newline)
-	if color == nil or not color then
+function DotsCustom(n, intvs, color, newline, prefix)
+	if isReload then return
+	elseif color == nil or not color then
 		color = io.DEFAULT_COLOR
 	end
 
+	io.Cprint(color, prefix)
 	for i=1,n do
 		io.Cprint(color, ".")
 		io.Lag(intvs[i])
@@ -42,11 +46,13 @@ function DotsCustom(n, intvs, color, newline)
 	end
 end
 
-function DotsRandom(n, randDiv, color, newline)
-	if color == nil or not color then
+function DotsRandom(n, randDiv, color, newline, prefix)
+	if isReload then return
+	elseif color == nil or not color then
 		color = io.DEFAULT_COLOR
 	end
 
+	io.Cprint(color, prefix)
 	for i=1,n do
 		io.Cprint(color, ".")
 		io.Lag(math.random() / randDiv)

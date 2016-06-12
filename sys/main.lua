@@ -37,10 +37,9 @@ end
 
 function LoadApp(dir, file)
 	file = string.sub(file, 1, string.len(file) - 4)
-	if not isReload then
-		io.Printf("Loading /app/%s", file)
-		animate.DotsRandom(3, 10, io.DEFAULT_COLOR, true)
-	end
+
+	animate.DotsRandom(3, 10, io.DEFAULT_COLOR, true, "Loading /app/" .. file)
+
 	local app = loadFile(dir .. file, false)
 	if app and type(app) == "table" and type(app.Run) == "function" then
 		Apps[file] = app
@@ -57,10 +56,7 @@ function LoadApp(dir, file)
 end
 
 function LoadApps()
-	if not isReload then
-		io.Printf("Loading /sys/commands")
-		animate.DotsRandom(3, 10, io.DEFAULT_COLOR, true)
-	end
+	animate.DotsRandom(3, 10, io.DEFAULT_COLOR, true, "Loading /sys/commands")
 	_G["commands"] = loadFile("/sys/commands", true)
 
 	for _, file in ipairs(fs.list("/app")) do
@@ -73,8 +69,7 @@ function LoadApps()
 end
 
 function StartupLock()
-	io.Print("Loading security info")
-	animate.Dots(3, 0.1, io.DEFAULT_COLOR, true)
+	animate.DotsRandom(3, 10, io.DEFAULT_COLOR, true, "Loading security info")
 	io.Clear()
 	if not lock.Init() and not fs.exists("/.ios/nolock") then
 		lock.PINPrompt()
