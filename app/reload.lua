@@ -43,6 +43,8 @@ function Run(alias, args)
 		animate.DotsRandom(1, 3, colors.blue)
 		main.LoadLibs(true)
 		animate.DotsRandom(3, 3, colors.blue)
+		main.Apps = {}
+		main.Aliases = {}
 		main.LoadApps(true)
 		animate.DotsRandom(3, 3, colors.blue)
 
