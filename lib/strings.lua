@@ -31,6 +31,10 @@ function string.endsWith(str, suffix)
 	return str:sub(-suffix:len()) == suffix
 end
 
+function string.contains(str, char)
+	return string.find(str, char, 1, true) ~= nil
+end
+
 function string.bytes(str)
 	local result = ""
 	str:gsub(".", function(c)
