@@ -48,25 +48,27 @@ function Scroll(n)
 	term.setCursorPos(1, h)
 	term.clearLine()
 	term.scroll(n)
-	footer()
 	term.setCursorPos(1, h - 1)
+	Footer()
 end
 
 -- Clear the terminal.
 function Clear()
 	term.clear()
-	footer()
 	term.setCursorPos(1, 1)
+	Footer()
 end
 
 -- Print the terminal footer
-function footer()
+function Footer()
 	local w, h = term.getSize()
+	local x, y = term.getCursorPos()
 	local oldColor = term.getTextColor()
 	term.setCursorPos(1, h)
 	SetColor(colors.lime)
 	term.write(sys.NameVersion)
 	FooterTime(oldColor)
+	term.setCursorPos(x, y)
 end
 
 -- Update the time in the terminal footer
