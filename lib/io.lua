@@ -106,16 +106,18 @@ function Print(msg)
 
 		if string.match(msg, "^\n") then
 			Newline()
+			x, y = term.getCursorPos()
 			msg = string.sub(msg, 2)
 		end
 
-		local text = string.match(msg, "^[^ \n]+")
+		local text = string.match(msg, "^[^ \t\n]+")
 		if text then
 			msg = string.sub(msg, string.len(text) + 1)
 			if string.len(text) > w then
 				while string.len(text) > 0 do
 					if x > w then
 						Newline()
+						x, y = term.getCursorPos()
 					end
 					term.write(text)
 					text = string.sub(text, (w-x) + 2)
@@ -124,6 +126,7 @@ function Print(msg)
 			else
 				if x + string.len(text) - 1 > w then
 					Newline()
+					x, y = term.getCursorPos()
 				end
 				term.write(text)
 				x, y = term.getCursorPos()
