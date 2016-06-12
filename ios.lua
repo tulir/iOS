@@ -79,6 +79,7 @@ _G["sys"] = {
 }
 _G["sys"].NameVersion = sys.OSName .. " " .. sys.OSVersion
 if pocket then _G["sys"].DeviceName = "iPhone"
+elseif turtle then _G["sys"].DeviceName = "iTurtle"
 else _G["sys"].DeviceName = "iMac" end
 
 _G["noArtificialLag"] = fs.exists("/.ios/nolag")
