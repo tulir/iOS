@@ -105,7 +105,11 @@ end
 function runApp(app, alias, args)
 	if app then
 		if type(app) ~= "table" or type(app.Run) ~= "function" then
-			io.Cprintfln(colors.red, "App %s (alias %s) wasn't loaded properly. Try load <app>", app, alias)
+			if app == alias then
+				io.Cprintfln(colors.red, "App %s wasn't loaded properly. Try reloading it?", app)
+			else
+				io.Cprintfln(colors.red, "App %s (alias %s) wasn't loaded properly. Try reloading it?", app, alias)
+			end
 		else
 			_G["runningApp"] = app
 			runCommandFunc(app.Run, cmd, args)
