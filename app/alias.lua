@@ -23,14 +23,14 @@ function Run(alias, args)
 			local cmd = args[1]
 			table.remove(args, 1)
 			local target = table.concat(args, " ")
-			main.AddAlias(cmd, target)
+			AddAlias(cmd, target)
 			io.Cprintfln(colors.cyan, "Aliased %s into %s", cmd, target)
 		else
 			io.Cprintfln(colors.red, "Usage: %s <alias> <command>", alias)
 		end
 	elseif alias == "unalias" then
 		if #args == 1 then
-			main.RemoveAlias(args[1])
+			RemoveAlias(args[1])
 			io.Cprintfln(colors.cyan, "Removed alias for %s", args[1])
 		else
 			io.Cprintfln(colors.red, "Usage: %s <alias>", alias)
