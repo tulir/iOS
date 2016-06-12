@@ -16,10 +16,10 @@
 
 -- Define the loadFile function that allows lua source files to be loaded
 local filesLoading = {}
-_G["loadFile"] = function(path, required, printInfo)
+_G["loadFile"] = function(path, required, isReload)
+	local printInfo = not isReload
 	local function lag(time)
-		if noArtificialLag or isReload then return
-		else os.sleep(time) end
+		if not noArtificialLag and not isReload then os.sleep(time) end
 	end
 
 	local function loadFail()
@@ -99,8 +99,6 @@ _G["sys"].NameVersion = sys.OSName .. " " .. sys.OSVersion
 if pocket then _G["sys"].DeviceName = "iPhone"
 else _G["sys"].DeviceName = "iMac" end
 
--- Check if the device is being reloaded (rather than rebooted)
-_G["isReload"] = fs.exists("/.ios/reload")
 _G["noArtificialLag"] = fs.exists("/.ios/nolag")
 
 -- Create the user data directory if it doesn't exist
@@ -112,29 +110,21 @@ if not fs.isDir("/.ios") then
 end
 
 -- Load the user startup script
-_G["startup"] = loadFile("/.ios/startup", false, not isReload)
+_G["startup"] = loadFile("/.ios/startup")
 if not startup then startup = {} end
 
 -- Load system scripts
-_G["main"] = loadFile("/sys/main", true, not isReload)
-_G["lock"] = loadFile("/sys/lock", true, not isReload)
+_G["main"] = loadFile("/sys/main", true)
+_G["lock"] = loadFile("/sys/lock", true)
 
 if startup.PreLibs then startup.PreLibs() end
 main.LoadLibs() -- Load libraries
 if startup.PreApps then startup.PreApps() end
 main.LoadApps() -- Load system and user apps
-_G["commands"] = loadFile("/sys/commands", true, not isReload)
 if startup.PreLogin then startup.PreLogin() end
 main.StartupLock() -- Activate the startup lock
-
--- Unset isReload so it wouldn't affect anything
-_G["isReload"] = false
-
 if startup.PostLogin then startup.PostLogin() end
 
--- Clear terminal and welcome user
-io.Clear()
-io.Cprintfln(colors.blue, "Welcome, %s", sys.Owner)
-
+main.Welcome()
 -- Run the main loop and the time updater in parallel
 parallel.waitForAny(main.Loop, main.TimeUpdater)

@@ -17,16 +17,16 @@
 Apps = {}
 Aliases = {}
 
-function LoadLibs()
+function LoadLibs(isReload)
 	for _, file in ipairs(fs.list("/lib")) do
 		file = string.sub(file, 1, string.len(file) - 4)
-		_G[file] = loadFile("/lib/" .. file, true, not isReload)
+		_G[file] = loadFile("/lib/" .. file, true, isReload)
 	end
 end
 
-function LoadApp(dir, file, printInfo)
+function LoadApp(dir, file, isReload)
 	file = string.sub(file, 1, string.len(file) - 4)
-	local app = loadFile(dir .. file, false, printInfo)
+	local app = loadFile(dir .. file, false, isReload)
 	if app and type(app) == "table" and type(app.Run) == "function" then
 		Apps[file] = app
 		if app.Aliases then
@@ -41,43 +41,30 @@ function LoadApp(dir, file, printInfo)
 	end
 end
 
-function LoadApps()
+function LoadApps(isReload)
 	for _, file in ipairs(fs.list("/app")) do
-		LoadApp("/app/", file, true)
+		LoadApp("/app/", file, isReload)
 	end
 
+	_G["commands"] = loadFile("/sys/commands", true, isReload)
+
 	for _, file in ipairs(fs.list("/.ios/localapps")) do
-		LoadApp("/.ios/localapps/", file, true)
+		LoadApp("/.ios/localapps/", file, isReload)
 	end
 end
 
 function StartupLock()
-	if not isReload then
-		io.Print("Loading security info")
-		animate.Dots(3, 0.1, io.DEFAULT_COLOR, true)
-	end
+	io.Print("Loading security info")
+	animate.Dots(3, 0.1, io.DEFAULT_COLOR, true)
 	io.Clear()
-	if not lock.Init() then
-		if isReload then
-			fs.delete("/.ios/reload")
-			-- Reload bar
-			w, h = term.getSize()
-			term.setCursorPos(w / 2 - 8, h / 2 - 1)
-			io.Cprint(colors.cyan, "|----------------|")
-			term.setCursorPos(w / 2 - 8, h / 2 + 1)
-			io.Cprint(colors.cyan, "|----------------|")
-			term.setCursorPos(w / 2 - 8, h / 2)
-			io.Cprint(colors.cyan, "|")
-			io.Cprint(colors.blue, "Reloading")
-			term.setCursorPos(w / 2 + 9, h / 2)
-			io.Cprint(colors.cyan, "|")
-			term.setCursorPos(w / 2 + 2, h / 2)
-			animate.DotsRandom(7, 3, colors.blue, true)
-			-- End reload bar
-		elseif not fs.exists("/.ios/nolock") then
-			lock.PINPrompt()
-		end
+	if not lock.Init() and not fs.exists("/.ios/nolock") then
+		lock.PINPrompt()
 	end
+end
+
+function Welcome()
+	io.Clear()
+	io.Cprintfln(colors.blue, "Welcome, %s", sys.Owner)
 end
 
 function TimeUpdater()

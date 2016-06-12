@@ -22,8 +22,35 @@ lock = lock.PINPrompt
 clear = io.Clear
 
 function reload()
-	fs.open("/.ios/reload", "w").close()
-	os.reboot()
+	io.Clear()
+	w, h = term.getSize()
+	--[[ Draw the following box:
+		|----------------|
+		|Reloading       |
+		|----------------|
+	]]--
+	term.setCursorPos(w / 2 - 8, h / 2 - 1)
+	io.Cprint(colors.cyan, "|----------------|")
+
+	term.setCursorPos(w / 2 - 8, h / 2)
+	io.Cprint(colors.cyan, "|")
+	io.Cprint(colors.blue, "Reloading")
+	term.setCursorPos(w / 2 + 9, h / 2)
+	io.Cprint(colors.cyan, "|")
+
+	term.setCursorPos(w / 2 - 8, h / 2 + 1)
+	io.Cprint(colors.cyan, "|----------------|")
+
+	term.setCursorPos(w / 2 + 2, h / 2)
+
+	-- Animates dots into the box while reloading libraries, apps and commands
+	animate.DotsRandom(1, 3, colors.blue)
+	main.LoadLibs(true)
+	animate.DotsRandom(3, 3, colors.blue)
+	main.LoadApps(true)
+	animate.DotsRandom(3, 3, colors.blue)
+
+	main.Welcome()
 end
 
 function reset()
