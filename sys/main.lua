@@ -58,13 +58,16 @@ end
 function LoadApps()
 	animate.DotsRandom("Loading /sys/commands", 3, 10)
 	_G["commands"] = loadFile("/sys/commands", true)
+	io.FooterTime()
 
 	for _, file in ipairs(fs.list("/app")) do
 		LoadApp("/app/", file)
+		io.FooterTime()
 	end
 
 	for _, file in ipairs(fs.list("/.ios/localapps")) do
 		LoadApp("/.ios/localapps/", file)
+		io.FooterTime()
 	end
 end
 
