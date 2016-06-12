@@ -1,3 +1,8 @@
+# 1.2.0 (Unreleased)
+* Manpages
+  * One per app by default
+  * Possibly non-app specific or more pages for one app (NYI)
+
 # 1.1.0 alias The Alias Version
 * Alias system
   * Commands can be aliased to actually run other commands
