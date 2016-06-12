@@ -88,6 +88,15 @@ function TimeUpdater()
 	end
 end
 
+function InitDone()
+	if startup.PreLogin then startup.PreLogin() end
+	main.StartupLock() -- Activate the startup lock
+	if startup.PostLogin then startup.PostLogin() end
+
+	main.Welcome()
+	Loop()
+end
+
 function Loop()
 	if startup.PreLoop then startup.PreLoop() end
 	while true do

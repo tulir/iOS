@@ -116,10 +116,6 @@ if startup.PreLibs then startup.PreLibs() end
 main.LoadLibs() -- Load libraries
 if startup.PreApps then startup.PreApps() end
 main.LoadApps() -- Load system and user apps
-if startup.PreLogin then startup.PreLogin() end
-main.StartupLock() -- Activate the startup lock
-if startup.PostLogin then startup.PostLogin() end
 
-main.Welcome()
 -- Run the main loop and the time updater in parallel
-parallel.waitForAny(main.Loop, main.TimeUpdater)
+parallel.waitForAny(main.InitDone, main.TimeUpdater)
