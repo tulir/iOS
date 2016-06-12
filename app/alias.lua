@@ -39,21 +39,19 @@ function Run(alias, args)
 end
 
 function LoadAliases()
-	io.Print("Loading user aliases")
+	animate.DotsRandom("Loading user aliases", 3, 10)
 	local file = fs.open("/.ios/aliases", "r")
 	local data = file.readAll()
 	file.close()
 	UserAliases = table.fromString(data)
-	animate.DotsRandom(3, 10, io.DEFAULT_COLOR, true)
 end
 
 function SaveAliases()
-	io.Cprint("Saving aliases")
+	animate.DotsRandom("Saving user aliases", 3, 10)
 	local file = fs.open("/.ios/aliases", "w")
 	local data = table.toString(UserAliases)
 	file.write(data)
 	file.close()
-	animate.Dots(3, 0.1, io.DEFAULT_COLOR, true)
 end
 
 function AddAlias(alias, cmd)

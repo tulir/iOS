@@ -41,13 +41,13 @@ function Run(alias, args)
 		term.setCursorPos(w / 2 + 2, 3)
 
 		-- Animates dots into the box while reloading libraries, apps and commands
-		animate.DotsRandom(1, 3, colors.blue)
+		animate.DotsRandom(nil, 1, 3, colors.blue, true, true)
 
 		term.setCursorPos(1, 5)
 		main.LoadLibs()
 		term.setCursorPos(w / 2 + 3, 3)
 
-		animate.DotsRandom(3, 3, colors.blue)
+		animate.DotsRandom(nil, 3, 3, colors.blue, true, true)
 
 		term.setCursorPos(1, 5)
 		main.Apps = {}
@@ -55,7 +55,7 @@ function Run(alias, args)
 		main.LoadApps()
 		term.setCursorPos(w / 2 + 6, 3)
 
-		animate.DotsRandom(3, 3, colors.blue)
+		animate.DotsRandom(nil, 3, 3, colors.blue, true, true)
 		_G["isReload"] = false
 
 		main.Welcome()

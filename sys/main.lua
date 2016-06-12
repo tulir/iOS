@@ -38,7 +38,7 @@ end
 function LoadApp(dir, file)
 	file = string.sub(file, 1, string.len(file) - 4)
 
-	animate.DotsRandom(3, 10, io.DEFAULT_COLOR, true, "Loading /app/" .. file)
+	animate.DotsRandom("Loading /app/" .. file, 3, 10)
 
 	local app = loadFile(dir .. file, false)
 	if app and type(app) == "table" and type(app.Run) == "function" then
@@ -56,7 +56,7 @@ function LoadApp(dir, file)
 end
 
 function LoadApps()
-	animate.DotsRandom(3, 10, io.DEFAULT_COLOR, true, "Loading /sys/commands")
+	animate.DotsRandom("Loading /sys/commands", 3, 10)
 	_G["commands"] = loadFile("/sys/commands", true)
 
 	for _, file in ipairs(fs.list("/app")) do
@@ -69,7 +69,7 @@ function LoadApps()
 end
 
 function StartupLock()
-	animate.DotsRandom(3, 10, io.DEFAULT_COLOR, true, "Loading security info")
+	animate.DotsRandom("Loading security info", 3, 10)
 	io.Clear()
 	if not lock.Init() and not fs.exists("/.ios/nolock") then
 		lock.PINPrompt()
