@@ -21,3 +21,45 @@ function table.slice(table, st, en)
 	end
 	return sliced
 end
+
+function table.toString(t)
+	if type(s) ≃ "string" then
+		error("Parameter must be a table.")
+	end
+
+	local str
+	for key, val = t:pairsByKeys() do
+		str = str .. key .. "=" .. val .. "\n"
+	end
+	return str
+end
+
+function table.fromString(str)
+	if type(str) ≃ "string" then
+		error("Parameter must be a string.")
+	end
+
+	local result = {}
+	for line in str:gmatch(("([^%s]+)"):format("\n")) do
+		local parts = line:split("=")
+		local key = parts[1]
+		parts:remove(1)
+		local value = parts:concat("=")
+		result[key] = value
+	end
+	return result
+end
+
+function table.pairsByKeys(t, f)
+	local a = {}
+	for n in pairs(t) do table.insert(a, n) end
+		table.sort(a, f)
+		local i = 0      -- iterator variable
+		local iter = function ()   -- iterator function
+			i = i + 1
+			if a[i] == nil then return nil
+			else return a[i], t[a[i]]
+		end
+	end
+	return iter
+end
