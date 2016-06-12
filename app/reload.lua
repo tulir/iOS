@@ -18,6 +18,7 @@ Aliases = { "load" }
 
 function Run(alias, args)
 	if #args == 0 then
+		_G["isReload"] = true
 		io.Clear()
 		w, h = term.getSize()
 		--[[ Draw the following box:
@@ -43,7 +44,7 @@ function Run(alias, args)
 		animate.DotsRandom(1, 3, colors.blue)
 
 		term.setCursorPos(1, 5)
-		main.LoadLibs(true)
+		main.LoadLibs()
 		term.setCursorPos(w / 2 + 3, 3)
 
 		animate.DotsRandom(3, 3, colors.blue)
@@ -51,10 +52,11 @@ function Run(alias, args)
 		term.setCursorPos(1, 5)
 		main.Apps = {}
 		main.Aliases = {}
-		main.LoadApps(true)
+		main.LoadApps()
 		term.setCursorPos(w / 2 + 6, 3)
 
 		animate.DotsRandom(3, 3, colors.blue)
+		_G["isReload"] = false
 
 		main.Welcome()
 	elseif #args == 1 then

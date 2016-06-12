@@ -17,7 +17,7 @@
 Apps = {}
 Aliases = {}
 
-function LoadLibs(isReload)
+function LoadLibs()
 	local function printLoad(file)
 		if not isReload then
 			write("Loading /lib/" .. file)
@@ -31,17 +31,17 @@ function LoadLibs(isReload)
 	for _, file in ipairs(fs.list("/lib")) do
 		file = string.sub(file, 1, string.len(file) - 4)
 		printLoad(file)
-		_G[file] = loadFile("/lib/" .. file, true, isReload)
+		_G[file] = loadFile("/lib/" .. file, true)
 	end
 end
 
-function LoadApp(dir, file, isReload)
+function LoadApp(dir, file)
 	file = string.sub(file, 1, string.len(file) - 4)
 	if not isReload then
 		io.Printf("Loading /app/%s", file)
 		animate.DotsRandom(3, 10, io.DEFAULT_COLOR, true)
 	end
-	local app = loadFile(dir .. file, false, isReload)
+	local app = loadFile(dir .. file, false)
 	if app and type(app) == "table" and type(app.Run) == "function" then
 		Apps[file] = app
 		if app.Aliases then
@@ -56,19 +56,19 @@ function LoadApp(dir, file, isReload)
 	end
 end
 
-function LoadApps(isReload)
+function LoadApps()
 	if not isReload then
 		io.Printf("Loading /sys/commands")
 		animate.DotsRandom(3, 10, io.DEFAULT_COLOR, true)
 	end
-	_G["commands"] = loadFile("/sys/commands", true, isReload)
+	_G["commands"] = loadFile("/sys/commands", true)
 
 	for _, file in ipairs(fs.list("/app")) do
-		LoadApp("/app/", file, isReload)
+		LoadApp("/app/", file)
 	end
 
 	for _, file in ipairs(fs.list("/.ios/localapps")) do
-		LoadApp("/.ios/localapps/", file, isReload)
+		LoadApp("/.ios/localapps/", file)
 	end
 end
 
