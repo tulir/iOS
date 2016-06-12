@@ -103,6 +103,8 @@ end
 function Loop()
 	if startup.PreLoop then startup.PreLoop() end
 	while true do
+		os.startTimer(0.05)
+		os.pullEvent()
 		local cmd, args, termd = io.ReadInput("$", true)
 		if cmd == "exit" then break
 		elseif not termd and cmd then HandleCommand(cmd, args) end
