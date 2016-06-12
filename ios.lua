@@ -16,12 +16,7 @@
 
 -- Define the loadFile function that allows lua source files to be loaded
 local filesLoading = {}
-_G["loadFile"] = function(path, required, isReload)
-	local printInfo = not isReload
-	local function lag(time)
-		if not noArtificialLag and not isReload then os.sleep(time) end
-	end
-
+_G["loadFile"] = function(path, required)
 	local function loadFail()
 		term.setTextColor(colors.red)
 		term.setTextColor(colors.lightGray)
@@ -33,33 +28,24 @@ _G["loadFile"] = function(path, required, isReload)
 		end
 	end
 
-	if printInfo then write("Loading " .. path) end
-
 	if filesLoading[path] == true then
-		write("\n")
 		printError(path.." is already being loaded")
 		loadFail()
 		return false
 	end
 	filesLoading[path] = true
-	lag(math.random() / 10)
-	if printInfo then write(".") end
 	local tEnv = {}
 	setmetatable(tEnv, {__index = _G})
 	local fnAPI, err = loadfile(path .. ".lua", tEnv)
 	if fnAPI then
 		local ok, err = pcall(fnAPI)
 		if not ok then
-			if printInfo then write("\n") end
 			printError(err)
 			filesLoading[path] = nil
 			loadFail()
 			return false
 		end
-		lag(math.random() / 10)
-		if printInfo then write(".") end
 	else
-		if printInfo then write("\n") end
 		printError(err)
 		filesLoading[path] = nil
 		loadFail()
@@ -72,8 +58,6 @@ _G["loadFile"] = function(path, required, isReload)
 			tAPI[k] =  v
 		end
 	end
-	lag(math.random() / 10)
-	if printInfo then print(".") end
 
 	filesLoading[path] = nil
 	return tAPI

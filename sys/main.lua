@@ -20,12 +20,20 @@ Aliases = {}
 function LoadLibs(isReload)
 	for _, file in ipairs(fs.list("/lib")) do
 		file = string.sub(file, 1, string.len(file) - 4)
+		print("Loading /lib/" .. file)
+		for i = 1, 3 do
+			write(".")
+			os.sleep(math.random() / 10)
+		end
+		write("\n")
 		_G[file] = loadFile("/lib/" .. file, true, isReload)
 	end
 end
 
 function LoadApp(dir, file, isReload)
 	file = string.sub(file, 1, string.len(file) - 4)
+	io.Printf("Loading %s%s", dir, file)
+	animate.DotsRandom(3, 10, io.DEFAULT_COLOR, true)
 	local app = loadFile(dir .. file, false, isReload)
 	if app and type(app) == "table" and type(app.Run) == "function" then
 		Apps[file] = app
@@ -46,6 +54,8 @@ function LoadApps(isReload)
 		LoadApp("/app/", file, isReload)
 	end
 
+	io.Printf("Loading /sys/commands")
+	animate.DotsRandom(3, 10, io.DEFAULT_COLOR, true)
 	_G["commands"] = loadFile("/sys/commands", true, isReload)
 
 	for _, file in ipairs(fs.list("/.ios/localapps")) do
