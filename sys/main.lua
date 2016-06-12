@@ -108,6 +108,7 @@ function runApp(app, alias, args)
 end
 
 function HandleCommand(cmd, args)
+	cmd = cmd:lower()
 	if runApp(Apps[cmd], cmd, args) then return end
 
 	local alias = Aliases[cmd]
