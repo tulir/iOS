@@ -86,6 +86,7 @@ function HandleAlias(cmd, args)
 		else
 			cmd = userAlias
 		end
+		cmd = cmd:lower()
 	end
 	return cmd, args
 end
