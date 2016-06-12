@@ -18,8 +18,6 @@
 local filesLoading = {}
 _G["loadFile"] = function(path, required)
 	local function loadFail()
-		term.setTextColor(colors.red)
-		term.setTextColor(colors.lightGray)
 		if required then
 			os.sleep(3)
 			os.shutdown()
