@@ -25,7 +25,9 @@ end
 function table.toString(t)
 	local str = ""
 	for key, val in table.pairsByKeys(t) do
-		str = str .. key .. "=" .. val .. "\n"
+		if key and val then
+			str = str .. key .. "=" .. val .. "\n"
+		end
 	end
 	str = str:sub(1, str:len() - 1)
 	return str
