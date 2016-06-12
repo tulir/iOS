@@ -234,6 +234,7 @@ function ReadLine(replChar, history)
 
 	while true do
 		local sEvent, param = os.pullEvent()
+		prevIO = os.clock()
 		if sEvent == "terminate" then
 			termd = true
 			break
