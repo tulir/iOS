@@ -75,7 +75,7 @@ _G["shell"] = shell
 -- Set system information
 _G["sys"] = {
 	OSName = "iOS",
-	OSVersion = "1.0.0"
+	OSVersion = "1.1.0"
 }
 _G["sys"].NameVersion = sys.OSName .. " " .. sys.OSVersion
 if pocket then _G["sys"].DeviceName = "iPhone"
