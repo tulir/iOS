@@ -46,21 +46,24 @@ function Run(alias, args)
 
 		main.Welcome()
 	elseif #args == 1 then
+		app = args[1] .. ".lua"
 		local dir = ""
-		if fs.exists("/app/" .. args[1]) then
+		if fs.exists("/app/" .. app) then
 			dir = "/app/"
-		elseif fs.exists("/.ios/localapps/" .. args[1]) then
+		elseif fs.exists("/.ios/localapps/" .. app) then
 			dir = "/.ios/localapps/"
 		else
 			io.Cprintfln(colors.red, "App %s not found.", args[1])
+			return
 		end
 
-		if main.LoadApp(dir, args[1]) then
-			io.Cprintfln(colors.cyan, "Successfully loaded %s.", args[2])
+		if main.LoadApp(dir, app, true) then
+			io.Cprintfln(colors.cyan, "Successfully loaded %s.", args[1])
 		else
-			io.Cprintfln(colors.red, "Failed to load %s.", args[2])
+			io.Cprintfln(colors.red, "Failed to load %s.", args[1])
 		end
 	elseif #args == 2 then
+		app = args[2] .. ".lua"
 		local dir = ""
 		if args[1] == "g" or args[1] == "global" then
 			dir = "/app/"
@@ -71,7 +74,7 @@ function Run(alias, args)
 			return
 		end
 
-		if main.LoadApp(dir, args[2]) then
+		if main.LoadApp(dir, app, true) then
 			io.Cprintfln(colors.cyan, "Successfully loaded %s.", args[2])
 		else
 			io.Cprintfln(colors.red, "Failed to load %s.", args[2])
