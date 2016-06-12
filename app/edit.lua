@@ -20,7 +20,15 @@ FillScreen = true
 function Run(alias, args)
 	local function editFile(file, name)
 		if alias == "touch" then
-			fs.open(file, "w").close()
+			local file = fs.open(file, "w")
+			if string.endsWith(file, ".lua") then
+				file.writeLine("Aliases = {}")
+				file.writeLine("")
+				file.writeLine("function Run()")
+				file.writeLine("  ")
+				file.writeLine("end")
+			end
+			file.close()
 			io.Cprintfln(colors.cyan, "%s created.", name)
 			return
 		elseif alias == "rm" then
