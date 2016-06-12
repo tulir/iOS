@@ -42,6 +42,7 @@ function Newline()
 	end
 end
 
+-- Scroll the terminal down `n` lines
 function Scroll(n)
 	local w, h = term.getSize()
 	term.setCursorPos(1, h)
@@ -58,6 +59,7 @@ function Clear()
 	term.setCursorPos(1, 1)
 end
 
+-- Print the terminal footer
 function footer()
 	local w, h = term.getSize()
 	local oldColor = term.getTextColor()
@@ -67,6 +69,7 @@ function footer()
 	FooterTime(oldColor)
 end
 
+-- Update the time in the terminal footer
 function FooterTime(oldColor)
 	if not oldColor then oldColor = DEFAULT_COLOR end
 	local x, y = term.getCursorPos()
@@ -172,13 +175,19 @@ function Cprintln(color, msg)
 	Newline()
 end
 
-function WaitKey()
+-- Wait for the user to press enter
+function WaitEnter()
 	while true do
 		local evt, param = os.pullEvent()
 		if evt == "key" and (param == keys.enter or param == keys.numPadEnter) then
 			break
 		end
 	end
+end
+
+-- Wait for the user to press a key
+function WaitKey()
+	os.pullEvent("key")
 end
 
 -- Read data from the user until the user presses enter.

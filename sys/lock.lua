@@ -80,7 +80,7 @@ function PINPrompt()
 		io.Clear()
 		io.Cprintln(colors.orange, "\n\n" .. sys.Owner .. "'s " .. sys.DeviceName .. " (locked)")
 		io.Cprintln(colors.lime, "\nPress enter to unlock.")
-		io.WaitKey()
+		io.WaitEnter()
 	else
 		local errorMsg = ""
 		while true do
