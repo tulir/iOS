@@ -23,28 +23,21 @@ function table.slice(table, st, en)
 end
 
 function table.toString(t)
-	if type(s) ≃ "string" then
-		error("Parameter must be a table.")
-	end
-
-	local str
-	for key, val = t:pairsByKeys() do
+	local str = ""
+	for key, val in table.pairsByKeys(t) do
 		str = str .. key .. "=" .. val .. "\n"
 	end
+	str = str:sub(1, str:len() - 1)
 	return str
 end
 
 function table.fromString(str)
-	if type(str) ≃ "string" then
-		error("Parameter must be a string.")
-	end
-
 	local result = {}
 	for line in str:gmatch(("([^%s]+)"):format("\n")) do
-		local parts = line:split("=")
+		local parts = string.split(line, "=")
 		local key = parts[1]
-		parts:remove(1)
-		local value = parts:concat("=")
+		table.remove(parts, 1)
+		local value = table.concat(parts, "=")
 		result[key] = value
 	end
 	return result
