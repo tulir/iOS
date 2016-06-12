@@ -16,10 +16,6 @@
 
 Aliases = { "unalias" }
 UserAliases = {}
-if not fs.exists("/.ios/aliases") then
-	fs.open("/.ios/aliases", "w").close()
-end
-LoadAliases()
 
 function Run(alias, args)
 	if alias == "alias" then
@@ -43,12 +39,12 @@ function Run(alias, args)
 end
 
 function LoadAliases()
-	io.Cprint("Loading aliases")
+	io.Print("Loading user aliases")
 	local file = fs.open("/.ios/aliases", "r")
 	local data = file.readAll()
 	file.close()
 	UserAliases = table.fromString(data)
-	animate.Dots(3, 0.1, io.DEFAULT_COLOR, true)
+	animate.DotsRandom(3, 10, io.DEFAULT_COLOR, true)
 end
 
 function SaveAliases()
@@ -87,3 +83,8 @@ function HandleAlias(cmd, args)
 	end
 	return cmd, args
 end
+
+if not fs.exists("/.ios/aliases") then
+	fs.open("/.ios/aliases", "w").close()
+end
+LoadAliases()
