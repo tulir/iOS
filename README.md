@@ -1,4 +1,6 @@
 # iOS
+[![License](http://img.shields.io/:license-gpl3-blue.svg?style=flat-square)](http://www.gnu.org/licenses/gpl-3.0.html)
+
 A custom shell for ComputerCraft devices that has some features.
 
 # Features
