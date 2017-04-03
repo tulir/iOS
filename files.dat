@@ -1,0 +1,31 @@
+{
+  baseURL = "https://raw.githubusercontent.com/tulir/iOS/master",
+  version = "1.1.0",
+  files = {
+    ios.lua = 1,
+    app = {
+      alias.lua = 1,
+      edit.lua = 1,
+      ls.lua = 1,
+      man.lua = 1,
+      redstone.lua = 1,
+      reload.lua = 1,
+      ssh.lua = 1,
+      sshd.lua = 1
+    },
+    lib = {
+      animate.lua = 1,
+      crypt.lua = 1,
+      io.lua = 1,
+      net.lua = 1,
+      strings.lua = 1,
+      tables.lua = 1
+    },
+    sys = {
+      commands.lua = 1,
+      edit.lua = 1,
+      lock.lua = 1,
+      main.lua = 1
+    }
+  }
+}
